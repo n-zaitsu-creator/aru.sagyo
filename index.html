@@ -5,181 +5,1012 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>ゆっくりタイピング練習</title>
   <style>
-    :root { --ink:#173042; --blue:#1769aa; --pale:#eef7fb; --ok:#087a3f; --bad:#b42318; --line:#b8d2df; }
-    * { box-sizing: border-box; }
-    body { margin:0; min-height:100vh; background:var(--pale); color:var(--ink); font-family:"Yu Gothic UI","Meiryo",sans-serif; font-size:18px; line-height:1.7; }
-    main { width:min(900px, calc(100% - 32px)); margin:32px auto; background:#fff; padding:36px; border-radius:20px; box-shadow:0 5px 22px #18516d20; }
-    h1 { text-align:center; font-size:clamp(28px,5vw,40px); margin:0 0 6px; color:#114f7d; }
-    .lead { text-align:center; margin:0 0 28px; color:#3a5968; }
-    .notice { background:#fff8df; border-left:6px solid #d49700; padding:10px 16px; border-radius:8px; margin-bottom:25px; }
-    .label { font-weight:700; font-size:21px; margin:20px 0 7px; }
-    .prompt { font-size:clamp(25px,4.5vw,34px); font-weight:700; background:#f4f9fc; border:2px solid var(--line); padding:22px; border-radius:12px; letter-spacing:.05em; }
-    .romaji { font-family:Consolas,"Courier New",monospace; font-size:clamp(22px,4vw,31px); line-height:1.8; word-break:break-all; background:#f4f9fc; border:2px solid var(--line); padding:18px; border-radius:12px; }
-    .done { color:var(--ok); background:#dff5e7; }
-    .current { color:#fff; background:var(--blue); border-radius:4px; padding:1px 2px; outline:3px solid #83bee5; }
-    .pending { color:#2c4757; }
-    .typing { width:100%; min-height:70px; font:700 clamp(23px,4vw,30px)/1.4 Consolas,"Courier New",monospace; letter-spacing:.04em; padding:12px 16px; border:3px solid var(--blue); border-radius:12px; color:var(--ink); background:#fff; }
-    .typing:disabled { background:#edf2f5; border-color:#9eb2bd; }
-    .feedback { min-height:40px; font-size:22px; font-weight:700; margin:8px 0; }
-    .feedback.bad { color:var(--bad); } .feedback.good { color:var(--ok); }
-    .stats { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; margin:26px 0; }
-    .stat { border:2px solid var(--line); border-radius:12px; padding:12px 16px; background:#f9fcfd; }
-    .stat span { display:block; font-size:15px; color:#45606e; } .stat strong { font-size:27px; }
-    .actions { display:flex; flex-wrap:wrap; gap:14px; margin-top:25px; }
-    button { appearance:none; cursor:pointer; min-height:58px; padding:10px 25px; border:0; border-radius:12px; color:#fff; background:var(--blue); font:700 20px "Yu Gothic UI","Meiryo",sans-serif; }
-    button:hover { background:#095384; } button:focus-visible,input:focus-visible { outline:4px solid #f2a900; outline-offset:3px; }
-    button.secondary { background:#476a7c; } button:disabled { opacity:.5; cursor:not-allowed; }
-    .result { margin-top:24px; padding:20px; background:#e5f5eb; border-radius:12px; border:2px solid #91cda8; display:none; }
-    .result h2 { margin:0 0 8px; font-size:25px; color:var(--ok); }
-    #resultText { white-space:pre-line; }
-    .hint { color:#45606e; font-size:16px; }
-    @media (max-width:560px) { main { width:calc(100% - 18px); margin:9px auto; padding:22px 18px; } .stats { grid-template-columns:1fr; } }
+    :root {
+      --ink:#173042;
+      --blue:#1769aa;
+      --pale:#eef7fb;
+      --ok:#087a3f;
+      --bad:#b42318;
+      --line:#b8d2df;
+    }
+
+    * {
+      box-sizing:border-box;
+    }
+
+    body {
+      margin:0;
+      min-height:100vh;
+      background:var(--pale);
+      color:var(--ink);
+      font-family:"Yu Gothic UI","Meiryo",sans-serif;
+      font-size:18px;
+      line-height:1.7;
+    }
+
+    main {
+      width:min(1100px, calc(100% - 32px));
+      margin:32px auto;
+      background:#fff;
+      padding:40px;
+      border-radius:20px;
+      box-shadow:0 5px 22px #18516d20;
+    }
+
+    h1 {
+      text-align:center;
+      font-size:clamp(28px,5vw,40px);
+      margin:0 0 6px;
+      color:#114f7d;
+    }
+
+    .lead {
+      text-align:center;
+      margin:0 0 28px;
+      color:#3a5968;
+    }
+
+    .notice {
+      background:#fff8df;
+      border-left:6px solid #d49700;
+      padding:10px 16px;
+      border-radius:8px;
+      margin-bottom:25px;
+    }
+
+    .label {
+      font-weight:700;
+      font-size:21px;
+      margin:20px 0 7px;
+    }
+
+    .prompt {
+      font-size:clamp(34px,4vw,48px);
+      font-weight:700;
+      background:#f4f9fc;
+      border:3px solid var(--line);
+      padding:30px;
+      border-radius:14px;
+      letter-spacing:.06em;
+      line-height:1.9;
+    }
+
+    .romaji {
+      font-family:Consolas,"Courier New",monospace;
+      font-size:clamp(28px,3.5vw,40px);
+      line-height:2;
+      word-break:break-all;
+      background:#fff;
+      border:3px solid var(--line);
+      padding:24px;
+      border-radius:14px;
+      letter-spacing:.05em;
+    }
+
+    /* 入力済み */
+    .done {
+      color:#8aa195;
+      background:#edf3ef;
+      border-radius:3px;
+    }
+
+    /* 今入力する文字 */
+    .current {
+      color:#fff;
+      background:var(--blue);
+      border-radius:6px;
+      padding:2px 6px;
+      outline:4px solid #f2a900;
+      box-shadow:0 0 0 2px #fff inset;
+    }
+
+    /* まだ入力していない文字 */
+    .pending {
+      color:#2c4757;
+      background:#f7fafb;
+      border-radius:3px;
+    }
+
+    .typing {
+      width:100%;
+      min-height:70px;
+      font:700 clamp(23px,4vw,30px)/1.4 Consolas,"Courier New",monospace;
+      letter-spacing:.04em;
+      padding:12px 16px;
+      border:3px solid var(--blue);
+      border-radius:12px;
+      color:var(--ink);
+      background:#fff;
+    }
+
+    .typing:disabled {
+      background:#edf2f5;
+      border-color:#9eb2bd;
+    }
+
+    .feedback {
+      min-height:40px;
+      font-size:22px;
+      font-weight:700;
+      margin:8px 0;
+    }
+
+    .feedback.bad {
+      color:var(--bad);
+    }
+
+    .feedback.good {
+      color:var(--ok);
+    }
+
+    .stats {
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:12px;
+      margin:26px 0;
+    }
+
+    .stat {
+      border:2px solid var(--line);
+      border-radius:12px;
+      padding:12px 16px;
+      background:#f9fcfd;
+    }
+
+    .stat span {
+      display:block;
+      font-size:15px;
+      color:#45606e;
+    }
+
+    .stat strong {
+      font-size:27px;
+    }
+
+    .actions {
+      display:flex;
+      flex-wrap:wrap;
+      gap:14px;
+      margin-top:25px;
+    }
+
+    button {
+      appearance:none;
+      cursor:pointer;
+      min-height:58px;
+      padding:10px 25px;
+      border:0;
+      border-radius:12px;
+      color:#fff;
+      background:var(--blue);
+      font:700 20px "Yu Gothic UI","Meiryo",sans-serif;
+    }
+
+    button:hover {
+      background:#095384;
+    }
+
+    button:focus-visible,
+    input:focus-visible {
+      outline:4px solid #f2a900;
+      outline-offset:3px;
+    }
+
+    button.secondary {
+      background:#476a7c;
+    }
+
+    button:disabled {
+      opacity:.5;
+      cursor:not-allowed;
+    }
+
+    .result {
+      margin-top:24px;
+      padding:20px;
+      background:#e5f5eb;
+      border-radius:12px;
+      border:2px solid #91cda8;
+      display:none;
+    }
+
+    .result h2 {
+      margin:0 0 8px;
+      font-size:25px;
+      color:var(--ok);
+    }
+
+    #resultText {
+      white-space:pre-line;
+    }
+
+    .hint {
+      color:#45606e;
+      font-size:16px;
+    }
+
+    @media (max-width:560px) {
+      main {
+        width:calc(100% - 18px);
+        margin:9px auto;
+        padding:22px 18px;
+      }
+
+      .stats {
+        grid-template-columns:1fr;
+      }
+    }
   </style>
 </head>
+
 <body>
+
 <main>
+
   <h1>ゆっくりタイピング練習</h1>
-  <p class="lead">あわてず、ローマ字を見ながら一文字ずつ練習しましょう。</p>
-  <div class="notice">キーボードは <strong>半角英数</strong> に切り替えてください。日本語入力（IME）の変換中は判定せず、誤操作になりにくいようにしています。</div>
+
+  <p class="lead">
+    あわてず、ローマ字を見ながら一文字ずつ練習しましょう。
+  </p>
+
+  <div class="notice">
+    キーボードは <strong>半角英数</strong> に切り替えてください。
+    日本語入力（IME）の変換中は判定せず、誤操作になりにくいようにしています。
+  </div>
+
   <div class="label">例題</div>
-  <p class="hint">「練習を始める」を押すと、登録されている例題から自動で問題を選びます。</p>
+
+  <p class="hint">
+    「練習を始める」を押すと、登録されている例題から自動で問題を選びます。
+  </p>
 
   <p id="sentenceProgress" class="hint" aria-live="polite"></p>
-  <div class="label">例題</div>
-  <div id="prompt" class="prompt">今日は作業を始める前に、机の上をきれいに整えます。分からないことは、あわてずに職員さんへ相談します。</div>
-  <div class="label">ローマ字（青い文字が今打つ文字です）</div>
+
+  <div class="label">問題文</div>
+
+  <div id="prompt" class="prompt">
+    今日は作業を始める前に、机の上をきれいに整えます。
+    分からないことは、あわてずに職員さんへ相談します。
+  </div>
+
+  <div class="label">ローマ字</div>
+
+  <p class="hint">
+    入力済み：薄い表示　｜　今打つ文字：青く強調　｜　これから：通常表示
+  </p>
+
   <div id="romaji" class="romaji" aria-live="polite"></div>
+
   <div class="label">入力</div>
-  <input id="typing" class="typing" type="text" inputmode="latin" autocomplete="off" autocapitalize="off" spellcheck="false" disabled aria-label="ローマ字を入力" placeholder="「練習を始める」を押してください">
+
+  <input
+    id="typing"
+    class="typing"
+    type="text"
+    inputmode="latin"
+    autocomplete="off"
+    autocapitalize="off"
+    spellcheck="false"
+    disabled
+    aria-label="ローマ字を入力"
+    placeholder="「練習を始める」を押してください"
+  >
+
   <div id="feedback" class="feedback" aria-live="assertive"></div>
 
   <section class="stats" aria-label="練習状況">
-    <div class="stat"><span>経過時間</span><strong id="elapsed">0分 0秒</strong></div>
-    <div class="stat"><span>打ち間違い</span><strong id="mistakes">0回</strong></div>
-    <div class="stat"><span>現在の連続正解</span><strong id="streak">0文字</strong></div>
-    <div class="stat"><span>最大連続正解</span><strong id="maxStreak">0文字</strong></div>
+
+    <div class="stat">
+      <span>経過時間</span>
+      <strong id="elapsed">0分 0秒</strong>
+    </div>
+
+    <div class="stat">
+      <span>打ち間違い</span>
+      <strong id="mistakes">0回</strong>
+    </div>
+
+    <div class="stat">
+      <span>現在の連続正解</span>
+      <strong id="streak">0文字</strong>
+    </div>
+
+    <div class="stat">
+      <span>最大連続正解</span>
+      <strong id="maxStreak">0文字</strong>
+    </div>
+
   </section>
-  <p class="hint">間違えても大丈夫です。同じ文字をもう一度打てば、続きから練習できます。</p>
+
+  <p class="hint">
+    間違えても大丈夫です。同じ文字をもう一度打てば、続きから練習できます。
+  </p>
+
   <div class="actions">
     <button id="start">練習を始める</button>
     <button id="retry" class="secondary" disabled>もう一度練習する</button>
     <button id="reset" class="secondary" disabled>途中でリセット</button>
   </div>
+
   <section id="result" class="result" aria-live="polite">
+
     <h2>練習が終わりました</h2>
+
     <div id="resultText"></div>
-    <div class="actions"><button id="copy" class="secondary">結果をコピー</button></div>
+
+    <div class="actions">
+      <button id="copy" class="secondary">
+        結果をコピー
+      </button>
+    </div>
+
   </section>
+
 </main>
+
 <script src="examples.js"></script>
+
 <script>
+
 (() => {
-  // 画面の例題に対応する、半角英数で入力するローマ字です。
-  const defaultExamples = [{ name:'例題 001', text:'例題データを読み込めませんでした。', romaji:'reidaideetawoyomemasendeshita' }];
-  let examples = Array.isArray(window.TYPING_EXAMPLES) && window.TYPING_EXAMPLES.length ? window.TYPING_EXAMPLES : defaultExamples, target = '', units = [], fragments = [], sentenceIndex = 0;
-  // よく使われるローマ字の別表記も正解として受け付けます。
+
+  const defaultExamples = [
+    {
+      name:'例題 001',
+      text:'例題データを読み込めませんでした。',
+      romaji:'reidaideetawoyomemasendeshita'
+    }
+  ];
+
+  let examples =
+    Array.isArray(window.TYPING_EXAMPLES) &&
+    window.TYPING_EXAMPLES.length
+      ? window.TYPING_EXAMPLES
+      : defaultExamples;
+
+  let target = '';
+  let units = [];
+  let fragments = [];
+  let sentenceIndex = 0;
+
   const variants = {
-    'sha':['sha','sya'], 'shu':['shu','syu'], 'sho':['sho','syo'],
-    'shi':['shi','si'], 'chi':['chi','ti'], 'tsu':['tsu','tu'], 'fu':['fu','hu'],
-    'ja':['ja','zya','jya'], 'ju':['ju','zyu','jyu'], 'jo':['jo','zyo','jyo'], 'ji':['ji','zi'],
+
+    'sha':['sha','sya'],
+    'shu':['shu','syu'],
+    'sho':['sho','syo'],
+
+    'shi':['shi','si'],
+
+    'chi':['chi','ti'],
+
+    'tsu':['tsu','tu'],
+
+    'fu':['fu','hu'],
+
+    'ja':['ja','zya','jya'],
+    'ju':['ju','zyu','jyu'],
+    'jo':['jo','zyo','jyo'],
+    'ji':['ji','zi'],
+
     'n':['n','nn'],
+
     'wo':['wo','o']
+
   };
-  const variantKeys = Object.keys(variants).sort((a,b) => b.length-a.length);
+
+  const variantKeys =
+    Object.keys(variants)
+      .sort((a,b) => b.length-a.length);
+
+
   function makeUnits(text) {
-    const units=[];
+
+    const units = [];
+
     for (let i=0; i<text.length;) {
-      const found=variantKeys.find(key => text.startsWith(key,i));
-      if (found) { units.push({ shown:found, choices:variants[found] }); i+=found.length; }
-      else { units.push({ shown:text[i], choices:[text[i]] }); i++; }
+
+      const found =
+        variantKeys.find(key => text.startsWith(key,i));
+
+      if (found) {
+
+        units.push({
+          shown:found,
+          choices:variants[found]
+        });
+
+        i += found.length;
+
+      } else {
+
+        units.push({
+          shown:text[i],
+          choices:[text[i]]
+        });
+
+        i++;
+
+      }
+
     }
+
     return units;
+
   }
+
+
   const $ = id => document.getElementById(id);
-  const el = { prompt:$('prompt'), progress:$('sentenceProgress'), romaji:$('romaji'), typing:$('typing'), feedback:$('feedback'), elapsed:$('elapsed'), mistakes:$('mistakes'), streak:$('streak'), max:$('maxStreak'), start:$('start'), retry:$('retry'), reset:$('reset'), result:$('result'), resultText:$('resultText'), copy:$('copy') };
-  let pos=0, states=[], entered='', mistakes=0, streak=0, maxStreak=0, startedAt=null, endedAt=null, timer=null, active=false;
-  const two = n => String(n).padStart(2,'0');
-  const clock = date => `${two(date.getHours())}:${two(date.getMinutes())}:${two(date.getSeconds())}`;
-  function duration(ms) { const s=Math.max(0,Math.floor(ms/1000)); return `${Math.floor(s/60)}分 ${s%60}秒`; }
+
+  const el = {
+
+    prompt:$('prompt'),
+    progress:$('sentenceProgress'),
+    romaji:$('romaji'),
+    typing:$('typing'),
+    feedback:$('feedback'),
+
+    elapsed:$('elapsed'),
+    mistakes:$('mistakes'),
+    streak:$('streak'),
+    max:$('maxStreak'),
+
+    start:$('start'),
+    retry:$('retry'),
+    reset:$('reset'),
+
+    result:$('result'),
+    resultText:$('resultText'),
+    copy:$('copy')
+
+  };
+
+
+  let pos=0;
+  let states=[];
+  let entered='';
+  let mistakes=0;
+  let streak=0;
+  let maxStreak=0;
+
+  let startedAt=null;
+  let endedAt=null;
+
+  let timer=null;
+  let active=false;
+
+
+  const two =
+    n => String(n).padStart(2,'0');
+
+
+  const clock =
+    date =>
+      `${two(date.getHours())}:${two(date.getMinutes())}:${two(date.getSeconds())}`;
+
+
+  function duration(ms) {
+
+    const s =
+      Math.max(0,Math.floor(ms/1000));
+
+    return `${Math.floor(s/60)}分 ${s%60}秒`;
+
+  }
+
+
   function drawRomaji() {
-    el.romaji.replaceChildren(...units.map((unit,i) => {
-      const span=document.createElement('span'); span.textContent=unit.shown;
-      span.className=i<pos?'done':i===pos?'current':'pending'; return span;
-    }));
+
+    el.romaji.replaceChildren(
+
+      ...units.map((unit,i) => {
+
+        const span =
+          document.createElement('span');
+
+        span.textContent =
+          unit.shown;
+
+        if (i < pos) {
+
+          span.className='done';
+
+        } else if (i === pos) {
+
+          span.className='current';
+
+        } else {
+
+          span.className='pending';
+
+        }
+
+        return span;
+
+      })
+
+    );
+
   }
-  function updateStats() { el.elapsed.textContent=duration(startedAt ? Date.now()-startedAt : 0); el.mistakes.textContent=`${mistakes}回`; el.streak.textContent=`${streak}文字`; el.max.textContent=`${maxStreak}文字`; }
+
+
+  function updateStats() {
+
+    el.elapsed.textContent =
+      duration(
+        startedAt
+          ? Date.now()-startedAt
+          : 0
+      );
+
+    el.mistakes.textContent =
+      `${mistakes}回`;
+
+    el.streak.textContent =
+      `${streak}文字`;
+
+    el.max.textContent =
+      `${maxStreak}文字`;
+
+  }
+
+
   function chooseRandomExample() {
+
     if (!examples.length) return;
-    const index = Math.floor(Math.random() * examples.length);
-    const example = examples[index];
-    fragments = example.parts ?? [{text:example.text,romaji:example.romaji}];
+
+    const index =
+      Math.floor(
+        Math.random()*examples.length
+      );
+
+    const example =
+      examples[index];
+
+    fragments =
+      example.parts ??
+      [
+        {
+          text:example.text,
+          romaji:example.romaji
+        }
+      ];
+
   }
+
+
   function loadSentence(index) {
-    sentenceIndex=index; const fragment=fragments[sentenceIndex]; target=fragment.romaji.replace(/\s/g,'').toLowerCase(); units=makeUnits(target); el.prompt.textContent=fragment.text;
-    el.progress.textContent=`文章 ${sentenceIndex + 1} / ${fragments.length}`;
+
+    sentenceIndex=index;
+
+    const fragment =
+      fragments[sentenceIndex];
+
+    target =
+      fragment.romaji
+        .replace(/\s/g,'')
+        .toLowerCase();
+
+    units =
+      makeUnits(target);
+
+    el.prompt.textContent =
+      fragment.text;
+
+    el.progress.textContent =
+      `文章 ${sentenceIndex+1} / ${fragments.length}`;
+
   }
+
+
   function expectedChoices() {
-    return [...new Set(states.flatMap(state => units[state.i]?.choices.filter(choice => choice.startsWith(state.buffer)) ?? []))];
+
+    return [
+      ...new Set(
+        states.flatMap(
+          state =>
+            units[state.i]
+              ?.choices
+              .filter(
+                choice =>
+                  choice.startsWith(state.buffer)
+              ) ?? []
+        )
+      )
+    ];
+
   }
+
+
   function reset() {
-    clearInterval(timer); pos=mistakes=streak=maxStreak=0; states=[{i:0,buffer:''}]; entered=''; startedAt=endedAt=null; active=false; loadSentence(0);
-    el.typing.value=''; el.typing.disabled=true; el.typing.placeholder='「練習を始める」を押してください'; el.feedback.textContent=''; el.feedback.className='feedback';
-    el.start.disabled=false; el.start.textContent='練習を始める'; el.retry.disabled=true; el.reset.disabled=true; el.result.style.display='none'; drawRomaji(); updateStats();
+
+    clearInterval(timer);
+
+    pos=0;
+    mistakes=0;
+    streak=0;
+    maxStreak=0;
+
+    states=[
+      {
+        i:0,
+        buffer:''
+      }
+    ];
+
+    entered='';
+
+    startedAt=null;
+    endedAt=null;
+
+    active=false;
+
+    loadSentence(0);
+
+    el.typing.value='';
+
+    el.typing.disabled=true;
+
+    el.typing.placeholder =
+      '「練習を始める」を押してください';
+
+    el.feedback.textContent='';
+
+    el.feedback.className='feedback';
+
+    el.start.disabled=false;
+
+    el.start.textContent='練習を始める';
+
+    el.retry.disabled=true;
+
+    el.reset.disabled=true;
+
+    el.result.style.display='none';
+
+    drawRomaji();
+
+    updateStats();
+
   }
+
+
   function begin() {
+
     chooseRandomExample();
-    reset(); startedAt=new Date(); active=true; el.start.disabled=true; el.reset.disabled=false; el.typing.disabled=false; el.typing.placeholder='ローマ字を入力';
-    timer=setInterval(updateStats,250); updateStats(); el.typing.focus();
+
+    reset();
+
+    startedAt=new Date();
+
+    active=true;
+
+    el.start.disabled=true;
+
+    el.reset.disabled=false;
+
+    el.typing.disabled=false;
+
+    el.typing.placeholder='ローマ字を入力';
+
+    timer=setInterval(updateStats,250);
+
+    updateStats();
+
+    el.typing.focus();
+
   }
+
+
   function finish(status='完了') {
-    active=false; endedAt=new Date(); clearInterval(timer); updateStats(); el.typing.disabled=true; el.retry.disabled=false; el.reset.disabled=true;
-    const endedLabel=status === 'リセット' ? 'リセット時刻' : '終了時刻';
-    const text=`タイピング練習の結果\n状態：${status}\n開始時刻：${clock(startedAt)}\n${endedLabel}：${clock(endedAt)}\nかかった時間：${duration(endedAt-startedAt)}\n打ち間違い：${mistakes}回\n最大連続正解：${maxStreak}文字`;
-    el.result.querySelector('h2').textContent=status === 'リセット' ? '練習をリセットしました' : '練習が終わりました'; el.resultText.textContent=text; el.result.style.display='block'; el.copy.dataset.text=text;
+
+    active=false;
+
+    endedAt=new Date();
+
+    clearInterval(timer);
+
+    updateStats();
+
+    el.typing.disabled=true;
+
+    el.retry.disabled=false;
+
+    el.reset.disabled=true;
+
+    const endedLabel =
+      status === 'リセット'
+        ? 'リセット時刻'
+        : '終了時刻';
+
+    const text =
+`タイピング練習の結果
+状態：${status}
+開始時刻：${clock(startedAt)}
+${endedLabel}：${clock(endedAt)}
+かかった時間：${duration(endedAt-startedAt)}
+打ち間違い：${mistakes}回
+最大連続正解：${maxStreak}文字`;
+
+    el.result
+      .querySelector('h2')
+      .textContent =
+        status === 'リセット'
+          ? '練習をリセットしました'
+          : '練習が終わりました';
+
+    el.resultText.textContent=text;
+
+    el.result.style.display='block';
+
+    el.copy.dataset.text=text;
+
   }
-  // keydownを使うことで、IMEの確定文字列ではなく実際の半角キーを一打ずつ安定して判定します。
-  el.typing.addEventListener('keydown', event => {
-    if (!active || event.isComposing || event.key === 'Process') return;
-    if (event.key === 'Backspace') { event.preventDefault(); return; }
-    if (event.ctrlKey || event.metaKey || event.altKey || event.key.length !== 1) return;
-    event.preventDefault();
-    const typed=event.key.toLowerCase();
-    if (!/^[a-z-]$/.test(typed)) { el.feedback.textContent='半角英字（a〜z）とハイフン（-）で入力してください。'; el.feedback.className='feedback bad'; return; }
-    const oldExpected=expectedChoices();
-    const nextStates=[];
-    for (const state of states) {
-      const unit=units[state.i];
-      if (!unit) continue;
-      const next=state.buffer+typed;
-      for (const choice of unit.choices) {
-        // 完全一致は次の文字へ進める。n / nn のように、さらに続く候補だけを入力途中として残す。
-        if (choice.startsWith(next) && choice !== next) nextStates.push({i:state.i,buffer:next});
-        if (choice === next) nextStates.push({i:state.i+1,buffer:''});
+
+
+  el.typing.addEventListener(
+    'keydown',
+    event => {
+
+      if (
+        !active ||
+        event.isComposing ||
+        event.key === 'Process'
+      ) return;
+
+      if (event.key === 'Backspace') {
+
+        event.preventDefault();
+
+        return;
+
       }
-    }
-    const unique=new Map(nextStates.map(state => [`${state.i}:${state.buffer}`,state]));
-    const possibleStates=[...unique.values()];
-    if (possibleStates.length) {
-      states=possibleStates;
-      pos=Math.min(...states.map(state => state.i)); entered+=typed; streak++; maxStreak=Math.max(maxStreak,streak); el.typing.value=entered;
-      el.feedback.textContent=''; el.feedback.className='feedback'; drawRomaji(); updateStats();
-      if (states.length && states.every(state => state.i === units.length && !state.buffer)) {
-        if (sentenceIndex < fragments.length - 1) {
-          pos=0; states=[{i:0,buffer:''}]; entered=''; el.typing.value=''; loadSentence(sentenceIndex + 1); drawRomaji();
-        } else finish();
+
+      if (
+        event.ctrlKey ||
+        event.metaKey ||
+        event.altKey ||
+        event.key.length !== 1
+      ) return;
+
+      event.preventDefault();
+
+      const typed =
+        event.key.toLowerCase();
+
+      if (!/^[a-z-]$/.test(typed)) {
+
+        el.feedback.textContent =
+          '半角英字（a〜z）とハイフン（-）で入力してください。';
+
+        el.feedback.className='feedback bad';
+
+        return;
+
       }
-    } else {
-      mistakes++; streak=0; el.feedback.textContent=`「${typed}」は違います。「${oldExpected.join(' または ')}」をもう一度打ちましょう。`; el.feedback.className='feedback bad'; updateStats();
+
+      const oldExpected =
+        expectedChoices();
+
+      const nextStates=[];
+
+
+      for (const state of states) {
+
+        const unit =
+          units[state.i];
+
+        if (!unit) continue;
+
+        const next =
+          state.buffer+typed;
+
+
+        for (const choice of unit.choices) {
+
+          if (
+            choice.startsWith(next) &&
+            choice !== next
+          ) {
+
+            nextStates.push({
+              i:state.i,
+              buffer:next
+            });
+
+          }
+
+          if (choice === next) {
+
+            nextStates.push({
+              i:state.i+1,
+              buffer:''
+            });
+
+          }
+
+        }
+
+      }
+
+
+      const unique =
+        new Map(
+          nextStates.map(
+            state =>
+              [
+                `${state.i}:${state.buffer}`,
+                state
+              ]
+          )
+        );
+
+
+      const possibleStates =
+        [...unique.values()];
+
+
+      if (possibleStates.length) {
+
+        states=possibleStates;
+
+        pos =
+          Math.min(
+            ...states.map(
+              state => state.i
+            )
+          );
+
+        entered += typed;
+
+        streak++;
+
+        maxStreak =
+          Math.max(
+            maxStreak,
+            streak
+          );
+
+        el.typing.value=entered;
+
+        el.feedback.textContent='';
+
+        el.feedback.className='feedback';
+
+        drawRomaji();
+
+        updateStats();
+
+
+        if (
+          states.length &&
+          states.every(
+            state =>
+              state.i === units.length &&
+              !state.buffer
+          )
+        ) {
+
+          if (
+            sentenceIndex <
+            fragments.length-1
+          ) {
+
+            pos=0;
+
+            states=[
+              {
+                i:0,
+                buffer:''
+              }
+            ];
+
+            entered='';
+
+            el.typing.value='';
+
+            loadSentence(
+              sentenceIndex+1
+            );
+
+            drawRomaji();
+
+          } else {
+
+            finish();
+
+          }
+
+        }
+
+      } else {
+
+        mistakes++;
+
+        streak=0;
+
+        el.feedback.textContent =
+          `「${typed}」は違います。「${oldExpected.join(' または ')}」をもう一度打ちましょう。`;
+
+        el.feedback.className='feedback bad';
+
+        updateStats();
+
+      }
+
     }
-  });
-  el.start.addEventListener('click', begin); el.retry.addEventListener('click', begin);
-  el.reset.addEventListener('click', () => { if (active) finish('リセット'); });
-  el.copy.addEventListener('click', async () => {
-    try { await navigator.clipboard.writeText(el.copy.dataset.text); el.copy.textContent='コピーしました'; }
-    catch { const area=document.createElement('textarea'); area.value=el.copy.dataset.text; document.body.append(area); area.select(); document.execCommand('copy'); area.remove(); el.copy.textContent='コピーしました'; }
-    setTimeout(()=>el.copy.textContent='結果をコピー',1800);
-  });
+  );
+
+
+  el.start.addEventListener(
+    'click',
+    begin
+  );
+
+  el.retry.addEventListener(
+    'click',
+    begin
+  );
+
+
+  el.reset.addEventListener(
+    'click',
+    () => {
+
+      if (active) {
+        finish('リセット');
+      }
+
+    }
+  );
+
+
+  el.copy.addEventListener(
+    'click',
+    async () => {
+
+      try {
+
+        await navigator.clipboard.writeText(
+          el.copy.dataset.text
+        );
+
+        el.copy.textContent='コピーしました';
+
+      } catch {
+
+        const area =
+          document.createElement('textarea');
+
+        area.value =
+          el.copy.dataset.text;
+
+        document.body.append(area);
+
+        area.select();
+
+        document.execCommand('copy');
+
+        area.remove();
+
+        el.copy.textContent='コピーしました';
+
+      }
+
+      setTimeout(
+        () =>
+          el.copy.textContent='結果をコピー',
+        1800
+      );
+
+    }
+  );
+
+
+  reset();
+
 })();
+
 </script>
+
 </body>
 </html>
