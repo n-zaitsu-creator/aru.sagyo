@@ -1,153 +1,543 @@
-// 長文タイピング練習用データ
-// ローマ字ルール
-// ず → zu
-// づ → du
-// じ → ji
-// ぢ → di
-//
-// 例:
-// 片付けて → katadukete
-// 気づいた → kiduita
-// 忘れずに → wasurezuni
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ゆっくりタイピング練習</title>
+
+<style>
+:root {
+  --ink:#173042;
+  --blue:#1769aa;
+  --pale:#eef7fb;
+  --ok:#087a3f;
+  --bad:#b42318;
+  --line:#b8d2df;
+}
+
+* {
+  box-sizing:border-box;
+}
+
+body {
+  margin:0;
+  min-height:100vh;
+  background:var(--pale);
+  color:var(--ink);
+  font-family:"Yu Gothic UI","Meiryo",sans-serif;
+  font-size:18px;
+  line-height:1.7;
+}
+
+main {
+  width:min(1100px, calc(100% - 32px));
+  margin:32px auto;
+  background:#fff;
+  padding:40px;
+  border-radius:20px;
+  box-shadow:0 5px 22px #18516d20;
+}
+
+h1 {
+  text-align:center;
+  font-size:clamp(28px,5vw,40px);
+  margin:0 0 6px;
+  color:#114f7d;
+}
+
+.lead {
+  text-align:center;
+  margin:0 0 28px;
+  color:#3a5968;
+}
+
+.notice {
+  background:#fff8df;
+  border-left:6px solid #d49700;
+  padding:10px 16px;
+  border-radius:8px;
+  margin-bottom:25px;
+}
+
+.label {
+  font-weight:700;
+  font-size:21px;
+  margin:20px 0 7px;
+}
+
+.prompt {
+  font-size:clamp(30px,4vw,40px);
+  font-weight:700;
+  background:#f4f9fc;
+  border:3px solid var(--line);
+  border-bottom:0;
+  padding:30px 30px 8px;
+  border-radius:14px 14px 0 0;
+  letter-spacing:.06em;
+  line-height:1.9;
+  margin-bottom:0;
+}
+
+.romaji {
+  font-family:Consolas,"Courier New",monospace;
+  font-size:clamp(20px,3.5vw,35px);
+  line-height:2;
+  word-break:break-all;
+  background:#f4f9fc;
+  border:3px solid var(--line);
+  border-top:0;
+  padding:0 30px 24px;
+  border-radius:0 0 14px 14px;
+  letter-spacing:.05em;
+}
+
+.done {
+  color:#8aa195;
+  background:#edf3ef;
+  border-radius:3px;
+}
+
+.current {
+  color:#fff;
+  background:var(--blue);
+  border-radius:6px;
+  padding:2px 6px;
+  outline:4px solid #f2a900;
+  box-shadow:0 0 0 2px #fff inset;
+}
+
+.pending {
+  color:#2c4757;
+  background:#f7fafb;
+  border-radius:3px;
+}
+
+.typing {
+  width:100%;
+  min-height:70px;
+  font:700 clamp(23px,4vw,30px)/1.4 Consolas,"Courier New",monospace;
+  letter-spacing:.04em;
+  padding:12px 16px;
+  border:3px solid var(--blue);
+  border-radius:12px;
+  color:var(--ink);
+  background:#fff;
+}
+
+.typing:disabled {
+  background:#edf2f5;
+  border-color:#9eb2bd;
+}
+
+.feedback {
+  min-height:40px;
+  font-size:22px;
+  font-weight:700;
+  margin:8px 0;
+}
+
+.feedback.bad {
+  color:var(--bad);
+}
+
+.feedback.good {
+  color:var(--ok);
+}
+
+.stats {
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:12px;
+  margin:26px 0;
+}
+
+.stat {
+  border:2px solid var(--line);
+  border-radius:12px;
+  padding:12px 16px;
+  background:#f9fcfd;
+}
+
+.stat span {
+  display:block;
+  font-size:15px;
+  color:#45606e;
+}
+
+.stat strong {
+  font-size:27px;
+}
+
+.actions {
+  display:flex;
+  flex-wrap:wrap;
+  gap:14px;
+  margin-top:25px;
+}
+
+button {
+  appearance:none;
+  cursor:pointer;
+  min-height:58px;
+  padding:10px 25px;
+  border:0;
+  border-radius:12px;
+  color:#fff;
+  background:var(--blue);
+  font:700 20px "Yu Gothic UI","Meiryo",sans-serif;
+}
+
+button:hover {
+  background:#095384;
+}
+
+button:focus-visible,
+input:focus-visible {
+  outline:4px solid #f2a900;
+  outline-offset:3px;
+}
+
+button.secondary {
+  background:#476a7c;
+}
+
+button:disabled {
+  opacity:.5;
+  cursor:not-allowed;
+}
+
+.result {
+  margin-top:24px;
+  padding:20px;
+  background:#e5f5eb;
+  border-radius:12px;
+  border:2px solid #91cda8;
+  display:none;
+}
+
+.result h2 {
+  margin:0 0 8px;
+  font-size:25px;
+  color:var(--ok);
+}
+
+#resultText {
+  white-space:pre-line;
+}
+
+.hint {
+  color:#45606e;
+  font-size:16px;
+}
+
+@media (max-width:560px) {
+  main {
+    width:calc(100% - 18px);
+    margin:9px auto;
+    padding:22px 18px;
+  }
+
+  .stats {
+    grid-template-columns:1fr;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<main>
+
+<h1>ゆっくりタイピング練習</h1>
+
+<p class="lead">
+あわてず、ローマ字を見ながら一文字ずつ練習しましょう。
+</p>
+
+<div class="notice">
+キーボードは <strong>半角英数</strong> に切り替えてください。
+日本語入力（IME）の変換中は判定せず、誤操作になりにくいようにしています。
+</div>
+
+<p id="sentenceProgress" class="hint" aria-live="polite"></p>
+
+<div class="label">例文</div>
+
+<div id="prompt" class="prompt">
+今日は作業を始める前に、机の上をきれいに整えます。
+分からないことは、あわてずに職員さんへ相談します。
+</div>
+
+<div id="romaji" class="romaji" aria-live="polite"></div>
+
+<div class="label">入力</div>
+
+<input
+  id="typing"
+  class="typing"
+  type="text"
+  inputmode="latin"
+  autocomplete="off"
+  autocapitalize="off"
+  spellcheck="false"
+  disabled
+  aria-label="ローマ字を入力"
+  placeholder="「練習を始める」を押してください"
+>
+
+<div id="feedback" class="feedback" aria-live="assertive"></div>
+
+<section class="stats" aria-label="練習状況">
+
+<div class="stat">
+<span>経過時間</span>
+<strong id="elapsed">0分 0秒</strong>
+</div>
+
+<div class="stat">
+<span>打ち間違い</span>
+<strong id="mistakes">0回</strong>
+</div>
+
+<div class="stat">
+<span>現在の連続正解</span>
+<strong id="streak">0文字</strong>
+</div>
+
+<div class="stat">
+<span>最大連続正解</span>
+<strong id="maxStreak">0文字</strong>
+</div>
+
+</section>
+
+<p class="hint">
+間違えても大丈夫です。同じ文字をもう一度打てば、続きから練習できます。
+</p>
+
+<div class="actions">
+<button id="start">練習を始める</button>
+<button id="retry" class="secondary" disabled>もう一度練習する</button>
+<button id="reset" class="secondary" disabled>途中でリセット</button>
+</div>
+
+<section id="result" class="result" aria-live="polite">
+
+<h2>練習が終わりました</h2>
+
+<div id="resultText"></div>
+
+<div class="actions">
+<button id="copy" class="secondary">
+結果をコピー
+</button>
+</div>
+
+</section>
+
+</main>
+
+<script>
+(() => {
+
+'use strict';
+
+/* =========================================================
+   文章データ
+   =========================================================
+   
+   ここでは「日本語」と「ひらがな」をセットで管理します。
+
+   ローマ字は直接書きません。
+
+   日本語
+      ↓
+   ひらがな
+      ↓
+   ローマ字
+      ↓
+   入力判定
+
+   という流れになります。
+========================================================= */
 
 const commonSentence = {
-  text: '自分のペースを大切にして、無理をしないように取り組みます。',
-  romaji: 'jibunnope-suwotaisetsunishitemuriwoshinaiyounitorikumimasu'
+  text:'自分のペースを大切にして、無理をしないように取り組みます。',
+  hiragana:'じぶんのぺーすをたいせつにして、むりをしないようにとりくみます。'
 };
 
 const sentences = [
-  {
-    text: '今日は商品の袋詰めを担当するので、数と向きを確かめながら丁寧に進めます。',
-    romaji: 'kyouhashouhinnofukurozumewotantousurunodekazutomukiwotashikamenagarateineinisusumemasu'
-  },
-  {
-    text: '作業を始める前に必要な道具を確認して、使い終わったら元の場所へ片付けます。',
-    romaji: 'sagyouwohajimerumaenihitsuyounadouguwokakuninshitsetsukaiowattaramotonobashoe katadukemasu'.replace(/\s/g, '')
-  },
-  {
-    text: '分からないことがあったときは、一人で悩まずに職員へ確認してから作業を続けます。',
-    romaji: 'wakaranai koto ga attatokiwahitoridenayamazunishokuinhekakun inshitekarasagyouwotsudukemasu'.replace(/\s/g, '')
-  },
-  {
-    text: '作業台の上をきれいにして、必要なものだけを並べてから作業を始めます。',
-    romaji: 'sagyoudainouewokireinishitehitsuyounomonodakewonarabete karasagyouw o hajimemasu'.replace(/\s/g, '')
-  },
-  {
-    text: '同じ作業を繰り返すときも、確認を忘れずに一つずつ落ち着いて進めます。',
-    romaji: 'onajisagyouw okurikaesutokimokakuninwowasurezuni hitotsuzutsuochitsuitesusumemasu'.replace(/\s/g, '')
-  },
-  {
-    text: '作業中に疲れたときは無理をせず、職員に伝えて休憩を取ります。',
-    romaji: 'sagyouchuunitsukaretatokiwamur i wosezushokuinnitsutaetekyuukei wotorimasu'.replace(/\s/g, '')
-  },
-  {
-    text: '商品の数を確認するときは、数え間違いがないようにゆっくり確認します。',
-    romaji: 'shouhinnnokazuwokakunin surutokiha kazoemachigainagainaiyouniyukkurikakun inshimasu'.replace(/\s/g, '')
-  },
-  {
-    text: '周りの人と声を掛け合いながら、安全に気をつけて作業を行います。',
-    romaji: 'mawarinohitotokoewokakeainagar ananzen nikiwotsuketesagyouwookonaimasu'.replace(/\s/g, '')
-  },
-  {
-    text: '今日できたことを振り返り、明日の作業でも同じようにできるように確認します。',
-    romaji: 'kyoudekita kotowofurikaer iashitanosagyoudemo onajiyounidekiruyounikakun inshimasu'.replace(/\s/g, '')
-  },
-  {
-    text: '作業場所を整理整頓して、次に使う人が気持ちよく使えるようにします。',
-    romaji: 'sagyoubashowoseiriseitonshite tsuginitsukauhitogakimochiyokutsukaeruyounishimasu'
-  },
-  {
-    text: '急いで作業するよりも、間違いがないように一つずつ確認することを大切にします。',
-    romaji: 'isoidesagyousuruyorimachigai ganaiyounihitotsuzutsukakunin surukotowotaisetsunishimasu'.replace(/\s/g, '')
-  },
-  {
-    text: '今日の目標を確認して、自分のできることから少しずつ取り組みます。',
-    romaji: 'kyounomokuhyouwokakun inshitejibun nodekirukotokar asukoshizutsutorikumimasu'.replace(/\s/g, '')
-  }
+
+{
+  text:'今日は商品の袋詰めを担当するので、数と向きを確かめながら丁寧に進めます。',
+  hiragana:'きょうはしょうひんのふくろづめをたんとうするので、かずとむきをたしかめながらていねいにすすめます。'
+},
+
+{
+  text:'作業を始める前に必要な道具を確認して、使い終わったら元の場所へ片付けます。',
+  hiragana:'さぎょうをはじめるまえにひつようなどうぐをかくにんして、つかいおわったらもとのばしょへかたづけます。'
+},
+
+{
+  text:'分からないことがあったときは、一人で悩まずに職員へ確認してから作業を続けます。',
+  hiragana:'わからないことがあったときは、ひとりでなやまずにしょくいんへかくにんしてからさぎょうをつづけます。'
+},
+
+{
+  text:'作業台の上をきれいにして、必要なものだけを並べてから作業を始めます。',
+  hiragana:'さぎょうだいのうえをきれいにして、ひつようなものだけをならべてからさぎょうをはじめます。'
+},
+
+{
+  text:'同じ作業を繰り返すときも、確認を忘れずに一つずつ落ち着いて進めます。',
+  hiragana:'おなじさぎょうをくりかえすときも、かくにんをわすれずにひとつずつおちついてすすめます。'
+},
+
+{
+  text:'作業中に疲れたときは無理をせず、職員に伝えて休憩を取ります。',
+  hiragana:'さぎょうちゅうにつかれたときはむりをせず、しょくいんにつたえてきゅうけいをとります。'
+},
+
+{
+  text:'商品の数を確認するときは、数え間違いがないようにゆっくり確認します。',
+  hiragana:'しょうひんのかずをかくにんするときは、かぞえまちがいがないようにゆっくりかくにんします。'
+},
+
+{
+  text:'周りの人と声を掛け合いながら、安全に気をつけて作業を行います。',
+  hiragana:'まわりのひととこえをかけあいながら、あんぜんにきをつけてさぎょうをおこないます。'
+},
+
+{
+  text:'今日できたことを振り返り、明日の作業でも同じようにできるように確認します。',
+  hiragana:'きょうできたことをふりかえり、あしたのさぎょうでもおなじようにできるようにかくにんします。'
+},
+
+{
+  text:'作業場所を整理整頓して、次に使う人が気持ちよく使えるようにします。',
+  hiragana:'さぎょうばしょをせいりせいとんして、つぎにつかうひとがきもちよくつかえるようにします。'
+},
+
+{
+  text:'急いで作業するよりも、間違いがないように一つずつ確認することを大切にします。',
+  hiragana:'いそいでさぎょうするよりも、まちがいがないようにひとつずつかくにんすることをたいせつにします。'
+},
+
+{
+  text:'今日の目標を確認して、自分のできることから少しずつ取り組みます。',
+  hiragana:'きょうのもくひょうをかくにんして、じぶんのできることからすこしずつとりくみます。'
+}
+
 ];
 
 const themes = [
-  {
-    text: '朝は準備をしてから作業場所へ行き、必要なものを確認して落ち着いて作業を始めます。',
-    romaji: 'asawajunbiwoshitekarasagyoubashoeiki hitsuyounamonowokakuninshiteochitsuitesagyouwohajimemasu'
-  },
-  {
-    text: '仕事では安全を第一に考えて、周りを確認しながら一つずつ作業を進めます。',
-    romaji: 'shigotodewaanzenwodaiichinikaete mawariwokakuninshitehitotsuzutsusagyouwosusumemasu'
-  },
-  {
-    text: '分からないことをそのままにせず、職員に質問して正しい方法を確認します。',
-    romaji: 'wakaranai kotowosonomamani sezu shokuin nishitsumonshite tadashii houhouwo kakuninshimasu'.replace(/\s/g, '')
-  },
-  {
-    text: '休憩時間には水分を取ってゆっくり休み、次の作業に備えます。',
-    romaji: 'kyuukeijikannniwasuibunwototteyukkuriyasumi tsuginosagyounisonaemasu'
-  },
-  {
-    text: '作業が終わったら使った道具を元の場所へ戻し、周りをきれいにしてから帰ります。',
-    romaji: 'sagyougaowattara tsukatta douguwomotonobashoe modoshi mawariwokireinishitekarakaerimasu'.replace(/\s/g, '')
-  },
-  {
-    text: '毎日の作業を少しずつ続けることで、自分のできることを増やしていきます。',
-    romaji: 'mainichinosagyouwo sukoshizutsutsudukerukotode jibun nodekirukotowofuyashiteikimasu'.replace(/\s/g, '')
-  },
-  {
-    text: '作業中に気づいたことがあれば、忘れずに職員へ伝えるようにします。',
-    romaji: 'sagyouchuunikiduitakotogareba wasurezunishokuinhetsutaeruyounishimasu'
-  },
-  {
-    text: '体調や気分に合わせて無理のないペースで作業し、困ったときは相談します。',
-    romaji: 'taichouyakibunnniawasetemurinonaipesude sagyoushi komattatokiw asoudanshimasu'.replace(/\s/g, '')
-  },
-  {
-    text: '新しい作業をするときは説明をよく聞いて、手順を確認してから始めます。',
-    romaji: 'atarashii sagyouwosurutokiwa setsumeiwoyokukiite tejunwokakuninshitekarahajimemasu'.replace(/\s/g, '')
-  },
-  {
-    text: '作業の途中で間違いに気づいた場合は、そのまま進めずに確認します。',
-    romaji: 'sagyounotochuu de machigainikiduita baaiwa sonomamasusumezunikakun inshimasu'.replace(/\s/g, '')
-  },
-  {
-    text: '周りの人と協力しながら、それぞれの役割を意識して作業します。',
-    romaji: 'mawarinohitotokyouryokushinagara sorezore no yakuwariwoishikishitesagyoushimasu'
-  },
-  {
-    text: 'できるようになった作業でも確認を続けて、丁寧に取り組むことを心がけます。',
-    romaji: 'dekiruyouninatta sagyoudemo kakuninwotsudukete teineini torikumukotowokokorogakemasu'
-  },
-  {
-    text: '作業の前後には手洗いをして、清潔な状態で作業できるようにします。',
-    romaji: 'sagyou no zengoni tearaiwoshite seiketsunajoutaide sagyouderukuyounishimasu'.replace(/\s/g, '')
-  },
-  {
-    text: '商品を扱うときは傷や汚れがないか確認し、丁寧に扱います。',
-    romaji: 'shouhinwoatsukautokiwa kizu ya yogoreganai kakakuninshi teinei ni atsukaimasu'.replace(/\s/g, '')
-  },
-  {
-    text: '作業の順番を確認して、一つの作業が終わってから次の作業へ進みます。',
-    romaji: 'sagyou no junbanwokakuninshite hitotsunosagyougaowattarakatsuginosagyoue susumimasu'.replace(/\s/g, '')
-  },
-  {
-    text: 'できなかったことだけではなく、できるようになったことも振り返ります。',
-    romaji: 'dekinakatta kotodakedenakudekiruyouninattakotomo furikaerimasu'.replace(/\s/g, '')
-  },
-  {
-    text: '自分のペースを守りながら、毎日少しずつ新しいことに挑戦します。',
-    romaji: 'jibunnope-suomamorinagara mainichisukoshizutsu atarashiikotonichousenshimasu'
-  },
-  {
-    text: '作業場では周りの人の動きにも気をつけて、安全に行動します。',
-    romaji: 'sagyouba dewa mawarinohitonougokinimo kiwotsukete anzennikoudoushimasu'
-  },
-  {
-    text: '一日の作業が終わったら今日できたことを確認して、明日の準備をします。',
-    romaji: 'ichinichinosagyougaowattara kyoudekita kotowokakun inshite ashitanojunbiwoshimasu'.replace(/\s/g, '')
-  },
-  {
-    text: '少しずつできることを増やして、自信を持って作業できるように取り組みます。',
-    romaji: 'sukoshizutsu dekirukotowofuyashite jishinwomotte sagyouderuyounitorikumimasu'
-  }
+
+{
+  text:'朝は準備をしてから作業場所へ行き、必要なものを確認して落ち着いて作業を始めます。',
+  hiragana:'あさはじゅんびをしてからさぎょうばしょへいき、ひつようなものをかくにんしておちついてさぎょうをはじめます。'
+},
+
+{
+  text:'仕事では安全を第一に考えて、周りを確認しながら一つずつ作業を進めます。',
+  hiragana:'しごとではあんぜんをだいいちにかんがえて、まわりをかくにんしながらひとつずつさぎょうをすすめます。'
+},
+
+{
+  text:'分からないことをそのままにせず、職員に質問して正しい方法を確認します。',
+  hiragana:'わからないことをそのままにせず、しょくいんにしつもんしてただしいほうほうをかくにんします。'
+},
+
+{
+  text:'休憩時間には水分を取ってゆっくり休み、次の作業に備えます。',
+  hiragana:'きゅうけいじかんにはすいぶんをとってゆっくりやすみ、つぎのさぎょうにそなえます。'
+},
+
+{
+  text:'作業が終わったら使った道具を元の場所へ戻し、周りをきれいにしてから帰ります。',
+  hiragana:'さぎょうがおわったらつかったどうぐをもとのばしょへもどし、まわりをきれいにしてからかえります。'
+},
+
+{
+  text:'毎日の作業を少しずつ続けることで、自分のできることを増やしていきます。',
+  hiragana:'まいにちのさぎょうをすこしずつつづけることで、じぶんのできることをふやしていきます。'
+},
+
+{
+  text:'作業中に気づいたことがあれば、忘れずに職員へ伝えるようにします。',
+  hiragana:'さぎょうちゅうにきづいたことがあれば、わすれずにしょくいんへつたえるようにします。'
+},
+
+{
+  text:'体調や気分に合わせて無理のないペースで作業し、困ったときは相談します。',
+  hiragana:'たいちょうやきぶんにあわせてむりのないぺーすでさぎょうし、こまったときはそうだんします。'
+},
+
+{
+  text:'新しい作業をするときは説明をよく聞いて、手順を確認してから始めます。',
+  hiragana:'あたらしいさぎょうをするときはせつめいをよくきいて、てじゅんをかくにんしてからはじめます。'
+},
+
+{
+  text:'作業の途中で間違いに気づいた場合は、そのまま進めずに確認します。',
+  hiragana:'さぎょうのとちゅうでまちがいにきづいたばあいは、そのまますすめずにかくにんします。'
+},
+
+{
+  text:'周りの人と協力しながら、それぞれの役割を意識して作業します。',
+  hiragana:'まわりのひとときょうりょくしながら、それぞれのやくわりをいしきしてさぎょうします。'
+},
+
+{
+  text:'できるようになった作業でも確認を続けて、丁寧に取り組むことを心がけます。',
+  hiragana:'できるようになったさぎょうでもかくにんをつづけて、ていねいにとりくむことをこころがけます。'
+},
+
+{
+  text:'作業の前後には手洗いをして、清潔な状態で作業できるようにします。',
+  hiragana:'さぎょうのぜんごにはてあらいをして、せいけつなじょうたいでさぎょうできるようにします。'
+},
+
+{
+  text:'商品を扱うときは傷や汚れがないか確認し、丁寧に扱います。',
+  hiragana:'しょうひんをあつかうときはきずやよごれがないかかくにんし、ていねいにあつかいます。'
+},
+
+{
+  text:'作業の順番を確認して、一つの作業が終わってから次の作業へ進みます。',
+  hiragana:'さぎょうのじゅんばんをかくにんして、ひとつのさぎょうがおわってからつぎのさぎょうへすすみます。'
+},
+
+{
+  text:'できなかったことだけではなく、できるようになったことも振り返ります。',
+  hiragana:'できなかったことだけではなく、できるようになったこともふりかえります。'
+},
+
+{
+  text:'自分のペースを守りながら、毎日少しずつ新しいことに挑戦します。',
+  hiragana:'じぶんのぺーすをまもりながら、まいにちすこしずつあたらしいことにちょうせんします。'
+},
+
+{
+  text:'作業場では周りの人の動きにも気をつけて、安全に行動します。',
+  hiragana:'さぎょうばではまわりのひとのうごきにもきをつけて、あんぜんにこうどうします。'
+},
+
+{
+  text:'一日の作業が終わったら今日できたことを確認して、明日の準備をします。',
+  hiragana:'いちにちのさぎょうがおわったらきょうできたことをかくにんして、あしたのじゅんびをします。'
+},
+
+{
+  text:'少しずつできることを増やして、自信を持って作業できるように取り組みます。',
+  hiragana:'すこしずつできることをふやして、じしんをもってさぎょうできるようにとりくみます。'
+}
+
 ];
+
+
+/* =========================================================
+   例文を作る
+========================================================= */
 
 const additionalSentenceCount = 4;
 
@@ -156,10 +546,12 @@ function shuffle(array) {
 }
 
 function createLongExample() {
-  const theme = themes[Math.floor(Math.random() * themes.length)];
 
-  const selectedSentences = shuffle(sentences)
-    .slice(0, additionalSentenceCount);
+  const theme =
+    themes[Math.floor(Math.random() * themes.length)];
+
+  const selectedSentences =
+    shuffle(sentences).slice(0, additionalSentenceCount);
 
   const parts = [
     theme,
@@ -168,23 +560,1269 @@ function createLongExample() {
   ];
 
   return {
-    text: parts.map(part => part.text).join(''),
-    romaji: parts.map(part => part.romaji).join(''),
+    text:parts.map(part => part.text).join(''),
+    hiragana:parts.map(part => part.hiragana).join(''),
     parts
   };
 }
 
-const generatedExamples = [];
+const examples = [];
 
 for (let i = 0; i < 20; i++) {
+
   const example = createLongExample();
 
-  generatedExamples.push({
-    name: `例題 ${String(i + 1).padStart(3, '0')}`,
-    text: example.text,
-    romaji: example.romaji,
-    parts: example.parts
+  examples.push({
+    name:`例題 ${String(i + 1).padStart(3, '0')}`,
+    text:example.text,
+    hiragana:example.hiragana,
+    parts:example.parts
   });
+
 }
 
-window.TYPING_EXAMPLES = generatedExamples;
+
+/* =========================================================
+   基本ひらがな → 標準ローマ字
+========================================================= */
+
+const BASIC_ROMAJI = {
+
+  あ:'a',
+  い:'i',
+  う:'u',
+  え:'e',
+  お:'o',
+
+  か:'ka',
+  き:'ki',
+  く:'ku',
+  け:'ke',
+  こ:'ko',
+
+  さ:'sa',
+  し:'shi',
+  す:'su',
+  せ:'se',
+  そ:'so',
+
+  た:'ta',
+  ち:'chi',
+  つ:'tsu',
+  て:'te',
+  と:'to',
+
+  な:'na',
+  に:'ni',
+  ぬ:'nu',
+  ね:'ne',
+  の:'no',
+
+  は:'ha',
+  ひ:'hi',
+  ふ:'fu',
+  へ:'he',
+  ほ:'ho',
+
+  ま:'ma',
+  み:'mi',
+  む:'mu',
+  め:'me',
+  も:'mo',
+
+  や:'ya',
+  ゆ:'yu',
+  よ:'yo',
+
+  ら:'ra',
+  り:'ri',
+  る:'ru',
+  れ:'re',
+  ろ:'ro',
+
+  わ:'wa',
+  を:'wo',
+
+  が:'ga',
+  ぎ:'gi',
+  ぐ:'gu',
+  げ:'ge',
+  ご:'go',
+
+  ざ:'za',
+  じ:'ji',
+  ず:'zu',
+  ぜ:'ze',
+  ぞ:'zo',
+
+  だ:'da',
+  ぢ:'di',
+  づ:'du',
+  で:'de',
+  ど:'do',
+
+  ば:'ba',
+  び:'bi',
+  ぶ:'bu',
+  べ:'be',
+  ぼ:'bo',
+
+  ぱ:'pa',
+  ぴ:'pi',
+  ぷ:'pu',
+  ぺ:'pe',
+  ぽ:'po'
+};
+
+
+/* =========================================================
+   拗音
+========================================================= */
+
+const COMBINATION_ROMAJI = {
+
+  きゃ:'kya',
+  きゅ:'kyu',
+  きょ:'kyo',
+
+  しゃ:'sha',
+  しゅ:'shu',
+  しょ:'sho',
+
+  ちゃ:'cha',
+  ちゅ:'chu',
+  ちょ:'cho',
+
+  にゃ:'nya',
+  にゅ:'nyu',
+  にょ:'nyo',
+
+  ひゃ:'hya',
+  ひゅ:'hyu',
+  ひょ:'hyo',
+
+  みゃ:'mya',
+  みゅ:'myu',
+  みょ:'myo',
+
+  りゃ:'rya',
+  りゅ:'ryu',
+  りょ:'ryo',
+
+  ぎゃ:'gya',
+  ぎゅ:'gyu',
+  ぎょ:'gyo',
+
+  じゃ:'ja',
+  じゅ:'ju',
+  じょ:'jo',
+
+  びゃ:'bya',
+  びゅ:'byu',
+  びょ:'byo',
+
+  ぴゃ:'pya',
+  ぴゅ:'pyu',
+  ぴょ:'pyo'
+};
+
+
+/* =========================================================
+   小さい文字
+========================================================= */
+
+const SMALL_ROMAJI = {
+
+  ゃ:'lya',
+  ゅ:'lyu',
+  ょ:'lyo',
+
+  ぁ:'la',
+  ぃ:'li',
+  ぅ:'lu',
+  ぇ:'le',
+  ぉ:'lo',
+
+  っ:'ltsu'
+};
+
+
+/* =========================================================
+   入力時に許可する別表記
+========================================================= */
+
+const INPUT_VARIANTS = {
+
+  sha:['sha','sya'],
+  shu:['shu','syu'],
+  sho:['sho','syo'],
+
+  shi:['shi','si'],
+
+  chi:['chi','ti'],
+
+  tsu:['tsu','tu'],
+
+  fu:['fu','hu'],
+
+  ju:['ju','jyu','zyu'],
+
+  n:['n','nn'],
+
+  lya:['lya','xya'],
+  lyu:['lyu','xyu'],
+  lyo:['lyo','xyo'],
+
+  la:['la','xa'],
+  li:['li','xi'],
+  lu:['lu','xu'],
+  le:['le','xe'],
+  lo:['lo','xo'],
+
+  ltsu:['ltsu','xtsu']
+};
+
+
+function getChoices(standard) {
+
+  if (INPUT_VARIANTS[standard]) {
+    return [...new Set(INPUT_VARIANTS[standard])];
+  }
+
+  return [standard];
+}
+
+
+/* =========================================================
+   ひらがな → ローマ字単位
+========================================================= */
+
+function kanaToUnits(kana) {
+
+  const result = [];
+
+  kana = String(kana || '')
+    .normalize('NFKC')
+    .toLowerCase();
+
+  for (let i = 0; i < kana.length;) {
+
+    const current = kana[i];
+
+    /* 句読点・記号は入力不要 */
+    if (
+      current === '。' ||
+      current === '、' ||
+      current === '「' ||
+      current === '」' ||
+      current === '『' ||
+      current === '』' ||
+      current === '（' ||
+      current === '）' ||
+      current === '・' ||
+      current === ' '
+    ) {
+      i++;
+      continue;
+    }
+
+
+    /* 長音 */
+    if (current === 'ー') {
+
+      result.push({
+        shown:'-',
+        choices:['-']
+      });
+
+      i++;
+      continue;
+    }
+
+
+    /* 拗音 */
+    const pair = kana.slice(i, i + 2);
+
+    if (COMBINATION_ROMAJI[pair]) {
+
+      const standard =
+        COMBINATION_ROMAJI[pair];
+
+      result.push({
+        shown:standard,
+        choices:getChoices(standard)
+      });
+
+      i += 2;
+      continue;
+    }
+
+
+    /* 小さい文字 */
+    if (SMALL_ROMAJI[current]) {
+
+      const standard =
+        SMALL_ROMAJI[current];
+
+      result.push({
+        shown:standard,
+        choices:getChoices(standard)
+      });
+
+      i++;
+      continue;
+    }
+
+
+    /* ん */
+    if (current === 'ん') {
+
+      result.push({
+        shown:'n',
+        choices:['n','nn']
+      });
+
+      i++;
+      continue;
+    }
+
+
+    /* 基本文字 */
+    if (BASIC_ROMAJI[current]) {
+
+      const standard =
+        BASIC_ROMAJI[current];
+
+      result.push({
+        shown:standard,
+        choices:getChoices(standard)
+      });
+
+      i++;
+      continue;
+    }
+
+
+    /* 未対応文字 */
+    result.push({
+      shown:current,
+      choices:[current]
+    });
+
+    i++;
+  }
+
+
+  /* =======================================================
+     っ の処理
+
+     例
+
+     きって
+
+     ki
+     っ
+     te
+
+     表示
+     kitte
+
+     入力
+     kitte
+
+     または
+
+     kiltsute
+     kixtsute
+
+     に対応
+  ======================================================= */
+
+  const finalUnits = [];
+
+  for (let i = 0; i < result.length; i++) {
+
+    const unit = result[i];
+
+    if (
+      unit.shown === 'ltsu' &&
+      i + 1 < result.length
+    ) {
+
+      const next = result[i + 1];
+
+      const nextChoice =
+        next.choices[0] || '';
+
+      const first =
+        nextChoice.charAt(0);
+
+      if (/^[a-z]$/.test(first)) {
+
+        finalUnits.push({
+          shown:first,
+          choices:[
+            first,
+            'ltsu',
+            'xtsu'
+          ]
+        });
+
+        continue;
+      }
+    }
+
+    finalUnits.push(unit);
+  }
+
+  return finalUnits;
+}
+
+
+/* =========================================================
+   HTML要素
+========================================================= */
+
+const $ = id =>
+  document.getElementById(id);
+
+const el = {
+
+  prompt:$('prompt'),
+
+  progress:$('sentenceProgress'),
+
+  romaji:$('romaji'),
+
+  typing:$('typing'),
+
+  feedback:$('feedback'),
+
+  elapsed:$('elapsed'),
+
+  mistakes:$('mistakes'),
+
+  streak:$('streak'),
+
+  max:$('maxStreak'),
+
+  start:$('start'),
+
+  retry:$('retry'),
+
+  reset:$('reset'),
+
+  result:$('result'),
+
+  resultText:$('resultText'),
+
+  copy:$('copy')
+};
+
+
+/* =========================================================
+   状態
+========================================================= */
+
+let units = [];
+
+let fragments = [];
+
+let sentenceIndex = 0;
+
+let states = [];
+
+let entered = '';
+
+let pos = 0;
+
+let mistakes = 0;
+
+let streak = 0;
+
+let maxStreak = 0;
+
+let startedAt = null;
+
+let endedAt = null;
+
+let timer = null;
+
+let active = false;
+
+
+/* =========================================================
+   時刻
+========================================================= */
+
+const two =
+  n =>
+    String(n).padStart(2,'0');
+
+function timeCode(date) {
+  if (!date) return '';
+
+  return (
+    two(date.getHours()) +
+    two(date.getMinutes()) +
+    two(date.getSeconds())
+  );
+}
+/* =========================================================
+   経過時間
+========================================================= */
+
+function duration(ms) {
+
+  const s =
+    Math.max(
+      0,
+      Math.floor(ms / 1000)
+    );
+
+  return `${Math.floor(s / 60)}分 ${s % 60}秒`;
+}
+
+
+/* =========================================================
+   ローマ字表示
+========================================================= */
+
+function drawRomaji() {
+
+  el.romaji.replaceChildren(
+
+    ...units.map((unit,i) => {
+
+      const span =
+        document.createElement('span');
+
+      span.textContent =
+        unit.shown;
+
+      if (i < pos) {
+
+        span.className =
+          'done';
+
+      } else if (i === pos) {
+
+        span.className =
+          'current';
+
+      } else {
+
+        span.className =
+          'pending';
+      }
+
+      return span;
+    })
+  );
+}
+
+
+/* =========================================================
+   統計
+========================================================= */
+
+function updateStats() {
+
+  el.elapsed.textContent =
+    duration(
+      startedAt
+        ? Date.now() - startedAt
+        : 0
+    );
+
+  el.mistakes.textContent =
+    `${mistakes}回`;
+
+  el.streak.textContent =
+    `${streak}文字`;
+
+  el.max.textContent =
+    `${maxStreak}文字`;
+}
+
+
+/* =========================================================
+   ランダム例文
+========================================================= */
+
+function chooseRandomExample() {
+
+  if (!examples.length) {
+    return;
+  }
+
+  const index =
+    Math.floor(
+      Math.random() * examples.length
+    );
+
+  const example =
+    examples[index];
+
+  if (
+    Array.isArray(example.parts) &&
+    example.parts.length
+  ) {
+
+    fragments =
+      example.parts.map(part => ({
+        text:part.text || '',
+        hiragana:part.hiragana || ''
+      }));
+
+  } else {
+
+    fragments = [
+      {
+        text:example.text || '',
+        hiragana:example.hiragana || ''
+      }
+    ];
+  }
+}
+
+
+/* =========================================================
+   文章読み込み
+========================================================= */
+
+function loadSentence(index) {
+
+  sentenceIndex =
+    index;
+
+  const fragment =
+    fragments[sentenceIndex];
+
+  const hiragana =
+    fragment?.hiragana || '';
+
+  units =
+    kanaToUnits(hiragana);
+
+  el.prompt.textContent =
+    fragment?.text || '';
+
+  el.progress.textContent =
+    `文章 ${sentenceIndex + 1} / ${fragments.length}`;
+}
+
+
+/* =========================================================
+   現在入力可能な候補
+========================================================= */
+
+function expectedChoices() {
+
+  const result = [];
+
+  for (const state of states) {
+
+    const unit =
+      units[state.i];
+
+    if (!unit) {
+      continue;
+    }
+
+    for (const choice of unit.choices) {
+
+      if (
+        choice.startsWith(
+          state.buffer
+        )
+      ) {
+
+        result.push(choice);
+      }
+    }
+  }
+
+  return [
+    ...new Set(result)
+  ];
+}
+
+
+/* =========================================================
+   状態を重複削除
+========================================================= */
+
+function uniqueStates(list) {
+
+  const map =
+    new Map();
+
+  for (const state of list) {
+
+    const key =
+      `${state.i}:${state.buffer}`;
+
+    if (!map.has(key)) {
+
+      map.set(
+        key,
+        state
+      );
+    }
+  }
+
+  return [
+    ...map.values()
+  ];
+}
+
+
+/* =========================================================
+   リセット
+========================================================= */
+
+function reset() {
+
+  clearInterval(timer);
+
+  pos = 0;
+
+  mistakes = 0;
+
+  streak = 0;
+
+  maxStreak = 0;
+
+  states = [
+    {
+      i:0,
+      buffer:''
+    }
+  ];
+
+  entered = '';
+
+  startedAt = null;
+
+  endedAt = null;
+
+  active = false;
+
+
+  if (!fragments.length) {
+    chooseRandomExample();
+  }
+
+
+  loadSentence(0);
+
+
+  el.typing.value = '';
+
+  el.typing.disabled = true;
+
+  el.typing.placeholder =
+    '「練習を始める」を押してください';
+
+
+  el.feedback.textContent = '';
+
+  el.feedback.className =
+    'feedback';
+
+
+  el.start.disabled = false;
+
+  el.start.textContent =
+    '練習を始める';
+
+  el.retry.disabled = true;
+
+  el.reset.disabled = true;
+
+
+  el.result.style.display =
+    'none';
+
+
+  drawRomaji();
+
+  updateStats();
+}
+
+
+/* =========================================================
+   練習開始
+========================================================= */
+
+function begin() {
+
+  chooseRandomExample();
+
+  reset();
+
+  startedAt =
+    new Date();
+
+  active = true;
+
+
+  el.start.disabled =
+    true;
+
+  el.reset.disabled =
+    false;
+
+  el.typing.disabled =
+    false;
+
+  el.typing.placeholder =
+    'ローマ字を入力';
+
+
+  timer =
+    setInterval(
+      updateStats,
+      250
+    );
+
+
+  updateStats();
+
+  el.typing.focus();
+}
+
+
+/* =========================================================
+   終了
+========================================================= */
+
+function finish(status = '完了') {
+  active = false;
+  endedAt = new Date();
+
+  clearInterval(timer);
+  updateStats();
+
+  el.typing.disabled = true;
+  el.retry.disabled = false;
+  el.reset.disabled = true;
+
+  const endedLabel =
+    status === 'リセット'
+      ? 'リセット時刻'
+      : '終了時刻';
+
+  // 画面に表示する結果
+  const text =
+`タイピング練習の結果
+状態：${status}
+かかった時間：${duration(endedAt - startedAt)}
+打ち間違い：${mistakes}回
+最大連続正解：${maxStreak}文字`;
+
+  // コピー時だけ付ける時間コード
+  const hiddenCode =
+    timeCode(startedAt) +
+    timeCode(endedAt);
+
+  el.result
+    .querySelector('h2')
+    .textContent =
+      status === 'リセット'
+        ? '練習をリセットしました'
+        : '練習が終わりました';
+
+  // 画面には時間コードを表示しない
+  el.resultText.textContent =
+    text;
+
+  // コピーしたときだけ時間コードを追加
+  el.copy.dataset.text =
+    text + '\n' + hiddenCode;
+
+  el.result.style.display =
+    'block';
+}
+
+/* =========================================================
+   入力判定
+========================================================= */
+
+el.typing.addEventListener(
+  'keydown',
+  event => {
+
+    if (
+      !active ||
+      event.isComposing ||
+      event.key === 'Process'
+    ) {
+      return;
+    }
+
+
+    /* バックスペース禁止 */
+
+    if (
+      event.key === 'Backspace'
+    ) {
+
+      event.preventDefault();
+
+      return;
+    }
+
+
+    /* Ctrl / Command / Alt 等は無視 */
+
+    if (
+      event.ctrlKey ||
+      event.metaKey ||
+      event.altKey ||
+      event.key.length !== 1
+    ) {
+      return;
+    }
+
+
+    event.preventDefault();
+
+
+    const typed =
+      event.key.toLowerCase();
+
+
+    /* 半角英字・ハイフンのみ */
+
+    if (
+      !/^[a-z-]$/.test(typed)
+    ) {
+
+      el.feedback.textContent =
+        '半角英字（a〜z）・ハイフン（-）で入力してください。';
+
+      el.feedback.className =
+        'feedback bad';
+
+      return;
+    }
+
+
+    const oldExpected =
+      expectedChoices();
+
+
+    const nextStates = [];
+
+
+    /* =====================================================
+       全候補を確認
+    ===================================================== */
+
+    for (const state of states) {
+
+      const unit =
+        units[state.i];
+
+      if (!unit) {
+        continue;
+      }
+
+
+      const next =
+        state.buffer + typed;
+
+
+      for (
+        const choice of unit.choices
+      ) {
+
+
+        /* -----------------------------------------------
+           まだ途中
+        ------------------------------------------------ */
+
+        if (
+          choice.startsWith(next) &&
+          choice !== next
+        ) {
+
+          nextStates.push({
+
+            i:
+              state.i,
+
+            buffer:
+              next
+
+          });
+        }
+
+
+        /* -----------------------------------------------
+           文字完成
+        ------------------------------------------------ */
+
+        if (
+          choice === next
+        ) {
+
+          nextStates.push({
+
+            i:
+              state.i + 1,
+
+            buffer:
+              ''
+
+          });
+        }
+
+      }
+    }
+
+
+    const possibleStates =
+      uniqueStates(
+        nextStates
+      );
+
+
+    /* =====================================================
+       正解
+    ===================================================== */
+
+    if (
+      possibleStates.length
+    ) {
+
+      states =
+        possibleStates;
+
+
+      pos =
+        Math.min(
+          ...states.map(
+            state => state.i
+          )
+        );
+
+
+      entered +=
+        typed;
+
+
+      streak++;
+
+
+      maxStreak =
+        Math.max(
+          maxStreak,
+          streak
+        );
+
+
+      el.typing.value =
+        entered;
+
+
+      el.feedback.textContent =
+        '';
+
+      el.feedback.className =
+        'feedback';
+
+
+      drawRomaji();
+
+      updateStats();
+
+
+      /* ===================================================
+         現在の文章が終了したか
+      =================================================== */
+
+      const completed =
+        states.some(
+          state =>
+            state.i === units.length &&
+            state.buffer === ''
+        );
+
+
+      if (completed) {
+
+
+        /* -----------------------------------------------
+           次の文章へ
+        ------------------------------------------------ */
+
+        if (
+          sentenceIndex <
+          fragments.length - 1
+        ) {
+
+          pos = 0;
+
+
+          states = [
+            {
+              i:0,
+              buffer:''
+            }
+          ];
+
+
+          entered = '';
+
+          el.typing.value =
+            '';
+
+
+          loadSentence(
+            sentenceIndex + 1
+          );
+
+
+          drawRomaji();
+
+
+        } else {
+
+          /* ---------------------------------------------
+             全文章終了
+          --------------------------------------------- */
+
+          finish();
+        }
+      }
+
+
+    } else {
+
+
+      /* =================================================
+         間違い
+      ================================================= */
+
+      mistakes++;
+
+      streak = 0;
+
+
+      const expected =
+        oldExpected.length
+          ? oldExpected.join(
+              ' または '
+            )
+          : '次の文字';
+
+
+      el.feedback.textContent =
+        `「${typed}」は違います。「${expected}」をもう一度打ちましょう。`;
+
+      el.feedback.className =
+        'feedback bad';
+
+
+      updateStats();
+    }
+
+  }
+);
+
+
+/* =========================================================
+   ボタン
+========================================================= */
+
+el.start.addEventListener(
+  'click',
+  begin
+);
+
+el.retry.addEventListener(
+  'click',
+  begin
+);
+
+el.reset.addEventListener(
+  'click',
+  () => {
+
+    if (active) {
+      finish('リセット');
+    }
+
+  }
+);
+
+
+/* =========================================================
+   結果コピー
+========================================================= */
+
+el.copy.addEventListener(
+  'click',
+  async () => {
+
+    try {
+
+      await navigator.clipboard.writeText(
+        el.copy.dataset.text
+      );
+
+      el.copy.textContent =
+        'コピーしました';
+
+    } catch {
+
+      const area =
+        document.createElement(
+          'textarea'
+        );
+
+      area.value =
+        el.copy.dataset.text;
+
+      document.body.append(area);
+
+      area.select();
+
+      document.execCommand(
+        'copy'
+      );
+
+      area.remove();
+
+      el.copy.textContent =
+        'コピーしました';
+    }
+
+    setTimeout(
+      () => {
+
+        el.copy.textContent =
+          '結果をコピー';
+
+      },
+      1800
+    );
+
+  }
+);
+/* =========================================================
+   初期化
+========================================================= */
+
+chooseRandomExample();
+
+reset();
+
+})();
+</script>
+
+</body>
+</html>
