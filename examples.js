@@ -1,321 +1,190 @@
-/*
-  長文タイピング練習用の例題データです。
-
-  ルール
-  ・ず → zu
-  ・づ → du
-  ・じ → ji
-  ・ぢ → di
-
-  例：
-  片付けて → katadukete
-  気づいた → kiduita
-  忘れずに → wasurezu ni
-
-  プルダウンは使用せず、
-  テーマ＋複数の文章＋共通文章を自動で組み合わせて
-  長い文章を作ります。
-*/
-
-
-// ============================================================
-// 共通文章
-// ============================================================
+// 長文タイピング練習用データ
+// ローマ字ルール
+// ず → zu
+// づ → du
+// じ → ji
+// ぢ → di
+//
+// 例:
+// 片付けて → katadukete
+// 気づいた → kiduita
+// 忘れずに → wasurezuni
 
 const commonSentence = {
   text: '自分のペースを大切にして、無理をしないように取り組みます。',
   romaji: 'jibunnope-suwotaisetsunishitemuriwoshinaiyounitorikumimasu'
 };
 
-
-// ============================================================
-// 組み合わせ用の文章
-// ============================================================
-
 const sentences = [
-
-  {
-    text: '作業を始める前に、今日の予定と必要な道具を確認します。',
-    romaji: 'sagyouwohajimerumaenikyouyoteitohitsuyounadouguwokakuninshimasu'
-  },
-
-  {
-    text: '机の上を整えて、使う物を取り出しやすい場所に置きます。',
-    romaji: 'tsukuenouewototonoetetsukaumonowotoridashiyasuibashoniokimasu'
-  },
-
-  {
-    text: '分からないことがあれば、あわてずに職員さんへ相談します。',
-    romaji: 'wakaranaikotogaarebaawatezushokuinsanhesoudanshimasu'
-  },
-
-  {
-    text: '一つの作業が終わったら、内容を見直して次の仕事へ進みます。',
-    romaji: 'hitotsunosagyougaowattaranaiyouwominaoshitetsuginoshigotoesusumimasu'
-  },
-
-  {
-    text: '休憩の時間には、水分をとってゆっくり気持ちを整えます。',
-    romaji: 'kyuukeinojikannihasuibunwototteyukkurikimochiwototonoemasu'
-  },
-
-  {
-    text: '小さな間違いに気づいたら、落ち着いて正しい方法に直します。',
-    romaji: 'chiisanamachigainikizuitaraochitsuitedadashiihouhouninaoshimasu'
-  },
-
-  {
-    text: '大切な書類や道具は、決められた場所へ丁寧に戻します。',
-    romaji: 'taisetsunashoruiyadouguwakimeraretabashoheteineinimodorimasu'
-  },
-
-  {
-    text: '周りの人への挨拶と感謝の言葉を、忘れずに伝えます。',
-    romaji: 'mawarinohitohenoaisatsutokanshanokotobawowasurezunitsutaemasu'
-  },
-
-  {
-    text: '作業の記録を書いた後に、明日の準備を少しずつ進めます。',
-    romaji: 'sagyounokirokuwokaitaatoniashitanojunbiwosukoshizutsusumemasu'
-  },
-
-  {
-    text: 'パソコンの画面を見ながら、入力した文字を一文字ずつ確認します。',
-    romaji: 'pasokonnogamenwominagaranyuuryokushitamojiwohitomojizutsukakuninshimasu'
-  },
-
-  {
-    text: '今日できたことを振り返り、明日も安心して作業を始めます。',
-    romaji: 'kyoudekitakotowofurikaeriashitomoanshinshitesagyouwohajimemasu'
-  },
-
-  {
-    text: '終わりの時間には、机の周りを片付けてから報告をします。',
-    romaji: 'owarinojikannihatsukuenomawariwokatazuketekarahoukokuoshimasu'
-  }
-
-];
-
-
-// ============================================================
-// テーマ文章
-// ============================================================
-
-const themes = [
-
   {
     text: '今日は商品の袋詰めを担当するので、数と向きを確かめながら丁寧に進めます。',
-    romaji: 'kyouhashouhinnofukurozumewotantousurunodekazutotashikamenagarateineinisusumemasu'
+    romaji: 'kyouhashouhinnofukurozumewotantousurunodekazutomukiwotashikamenagarateineinisusumemasu'
   },
-
   {
-    text: '今日はパソコンへの文字入力を担当するので、見本と画面を比べながら入力します。',
-    romaji: 'kyouhapasokonhenomojinyuuryokuwotantousurunodemihontogamenwokurabenagaranyuuryokushimasu'
+    text: '作業を始める前に必要な道具を確認して、使い終わったら元の場所へ片付けます。',
+    romaji: 'sagyouwohajimerumaenihitsuyounadouguwokakuninshitsetsukaiowattaramotonobashoe katadukemasu'.replace(/\s/g, '')
   },
-
   {
-    text: '今日は書類の仕分けを担当するので、名前と日付を一つずつ確認して分けます。',
-    romaji: 'kyouhashoruinowakewotantousurunonamaetohizukewohitotsuzutsukakuninshitewakemasu'
+    text: '分からないことがあったときは、一人で悩まずに職員へ確認してから作業を続けます。',
+    romaji: 'wakaranai koto ga attatokiwahitoridenayamazunishokuinhekakun inshitekarasagyouwotsudukemasu'.replace(/\s/g, '')
   },
-
   {
-    text: '今日は部屋の清掃を担当するので、使う場所と順番を確認してから始めます。',
-    romaji: 'kyouhaheyanoseisouwotantousurunodetsukaubashotojunbanwokakuninshitekarahajimemasu'
+    text: '作業台の上をきれいにして、必要なものだけを並べてから作業を始めます。',
+    romaji: 'sagyoudainouewokireinishitehitsuyounomonodakewonarabete karasagyouw o hajimemasu'.replace(/\s/g, '')
   },
-
   {
-    text: '今日は品物の検品を担当するので、傷や数の違いがないかを落ち着いて見ます。',
-    romaji: 'kyouhashinamonokenpinwotantousurunodekizuyakazunochigainagaikaochitsuitemimasu'
+    text: '同じ作業を繰り返すときも、確認を忘れずに一つずつ落ち着いて進めます。',
+    romaji: 'onajisagyouw okurikaesutokimokakuninwowasurezuni hitotsuzutsuochitsuitesusumemasu'.replace(/\s/g, '')
   },
-
   {
-    text: '今日はラベル貼りを担当するので、位置と文字の向きをそろえて貼ります。',
-    romaji: 'kyouharaberuhariwotantousurunodeichitomojinomukiwosoroeteharimasu'
+    text: '作業中に疲れたときは無理をせず、職員に伝えて休憩を取ります。',
+    romaji: 'sagyouchuunitsukaretatokiwamur i wosezushokuinnitsutaetekyuukei wotorimasu'.replace(/\s/g, '')
   },
-
   {
-    text: '今日は箱を組み立てる作業を担当するので、折り目を合わせてゆっくり作ります。',
-    romaji: 'kyouhahakowokumitaterusagyouwotantousurunodeorimewoawaseteyukkuritsukurimasu'
+    text: '商品の数を確認するときは、数え間違いがないようにゆっくり確認します。',
+    romaji: 'shouhinnnokazuwokakunin surutokiha kazoemachigainagainaiyouniyukkurikakun inshimasu'.replace(/\s/g, '')
   },
-
   {
-    text: '今日は在庫の数を調べるので、棚の番号を見ながら正しく記録します。',
-    romaji: 'kyouhazaikonokazuwoshiraberunodetanobangouwominagaratadashikukirokushimasu'
+    text: '周りの人と声を掛け合いながら、安全に気をつけて作業を行います。',
+    romaji: 'mawarinohitotokoewokakeainagar ananzen nikiwotsuketesagyouwookonaimasu'.replace(/\s/g, '')
   },
-
   {
-    text: '今日は郵便物の準備を担当するので、宛先と必要な物を確かめます。',
-    romaji: 'kyouhayuubinbutsunojunbiwotantousurunodeatesakitohitsuyounamonowotashikamemasu'
+    text: '今日できたことを振り返り、明日の作業でも同じようにできるように確認します。',
+    romaji: 'kyoudekita kotowofurikaer iashitanosagyoudemo onajiyounidekiruyounikakun inshimasu'.replace(/\s/g, '')
   },
-
   {
-    text: '今日は花や植物の手入れを担当するので、水の量と置く場所に気をつけます。',
-    romaji: 'kyouhahanayashokubutsunoteirewotantousurunodemizunoryoutookubashonikiwotsukemasu'
+    text: '作業場所を整理整頓して、次に使う人が気持ちよく使えるようにします。',
+    romaji: 'sagyoubashowoseiriseitonshite tsuginitsukauhitogakimochiyokutsukaeruyounishimasu'
   },
-
   {
-    text: '今日は写真の整理を担当するので、写っている内容を見て名前を付けます。',
-    romaji: 'kyouhashashinnoseiriwotantousurunodeutsutteirunaiyouwomitenamaewotsukemasu'
+    text: '急いで作業するよりも、間違いがないように一つずつ確認することを大切にします。',
+    romaji: 'isoidesagyousuruyorimachigai ganaiyounihitotsuzutsukakunin surukotowotaisetsunishimasu'.replace(/\s/g, '')
   },
-
   {
-    text: '今日は古紙を分ける作業を担当するので、種類ごとの箱へ間違えずに入れます。',
-    romaji: 'kyouhakoshiwowakerusagyouwotantousurunodeshuruigotonohakohemachigaezuniiremasu'
-  },
-
-  {
-    text: '今日は予定表を確認するので、時間と場所を書き間違えないようにします。',
-    romaji: 'kyouhayoteihyouwokakuninsurunodejikantobashowokakimachigaenaiyounishimasu'
-  },
-
-  {
-    text: '今日は作業日誌を書くので、できたことと気づいたことを順番に記録します。',
-    romaji: 'kyouhasagyounisshiwokakunodedekitakototokiduitakotowojunbannikirokushimasu'
-  },
-
-  {
-    text: '今日は会議の準備を担当するので、椅子と資料の数をそろえます。',
-    romaji: 'kyouhakaiginojunbiwotantousurunodeisutoshiryounokazuwosoroemasu'
-  },
-
-  {
-    text: '今日はお知らせを掲示するので、見やすい高さと位置を選んで貼ります。',
-    romaji: 'kyouhaoshirasewokeijisurunodemiyasuitakasatoichiwoerandeharimasu'
-  },
-
-  {
-    text: '今日は道具の点検を担当するので、使える物と交換が必要な物を分けます。',
-    romaji: 'kyouhadougunotenkenwotantousurunodetsukaerumonotokoukangahitsuyounamonowowakemasu'
-  },
-
-  {
-    text: '今日は作品づくりを担当するので、見本を見ながら一つずつ形にします。',
-    romaji: 'kyouhasakuhinzukuriwotantousurunodemihonwominagarahitotsuzutsukatachinishimasu'
-  },
-
-  {
-    text: '今日は伝票の確認を担当するので、番号と品物の名前を読み合わせます。',
-    romaji: 'kyouhadenpyounokakuninwotantousurunodebangoutoshinamononamaewoyomiawasemasu'
-  },
-
-  {
-    text: '今日は一日の振り返りをするので、良かったことを見つけて記録します。',
-    romaji: 'kyouhaichinichinofurikaeriwosurunodeyokattakotowomitsuketekirokushimasu'
+    text: '今日の目標を確認して、自分のできることから少しずつ取り組みます。',
+    romaji: 'kyounomokuhyouwokakun inshitejibun nodekirukotokar asukoshizutsutorikumimasu'.replace(/\s/g, '')
   }
-
 ];
 
-
-// ============================================================
-// 1問に追加する文章の数
-// ============================================================
-
-// 4なら
-// テーマ1文
-// ＋追加文章4文
-// ＋共通文章1文
-//
-// 合計6文の長文になります。
+const themes = [
+  {
+    text: '朝は準備をしてから作業場所へ行き、必要なものを確認して落ち着いて作業を始めます。',
+    romaji: 'asawajunbiwoshitekarasagyoubashoeiki hitsuyounamonowokakuninshiteochitsuitesagyouwohajimemasu'
+  },
+  {
+    text: '仕事では安全を第一に考えて、周りを確認しながら一つずつ作業を進めます。',
+    romaji: 'shigotodewaanzenwodaiichinikaete mawariwokakuninshitehitotsuzutsusagyouwosusumemasu'
+  },
+  {
+    text: '分からないことをそのままにせず、職員に質問して正しい方法を確認します。',
+    romaji: 'wakaranai kotowosonomamani sezu shokuin nishitsumonshite tadashii houhouwo kakuninshimasu'.replace(/\s/g, '')
+  },
+  {
+    text: '休憩時間には水分を取ってゆっくり休み、次の作業に備えます。',
+    romaji: 'kyuukeijikannniwasuibunwototteyukkuriyasumi tsuginosagyounisonaemasu'
+  },
+  {
+    text: '作業が終わったら使った道具を元の場所へ戻し、周りをきれいにしてから帰ります。',
+    romaji: 'sagyougaowattara tsukatta douguwomotonobashoe modoshi mawariwokireinishitekarakaerimasu'.replace(/\s/g, '')
+  },
+  {
+    text: '毎日の作業を少しずつ続けることで、自分のできることを増やしていきます。',
+    romaji: 'mainichinosagyouwo sukoshizutsutsudukerukotode jibun nodekirukotowofuyashiteikimasu'.replace(/\s/g, '')
+  },
+  {
+    text: '作業中に気づいたことがあれば、忘れずに職員へ伝えるようにします。',
+    romaji: 'sagyouchuunikiduitakotogareba wasurezunishokuinhetsutaeruyounishimasu'
+  },
+  {
+    text: '体調や気分に合わせて無理のないペースで作業し、困ったときは相談します。',
+    romaji: 'taichouyakibunnniawasetemurinonaipesude sagyoushi komattatokiw asoudanshimasu'.replace(/\s/g, '')
+  },
+  {
+    text: '新しい作業をするときは説明をよく聞いて、手順を確認してから始めます。',
+    romaji: 'atarashii sagyouwosurutokiwa setsumeiwoyokukiite tejunwokakuninshitekarahajimemasu'.replace(/\s/g, '')
+  },
+  {
+    text: '作業の途中で間違いに気づいた場合は、そのまま進めずに確認します。',
+    romaji: 'sagyounotochuu de machigainikiduita baaiwa sonomamasusumezunikakun inshimasu'.replace(/\s/g, '')
+  },
+  {
+    text: '周りの人と協力しながら、それぞれの役割を意識して作業します。',
+    romaji: 'mawarinohitotokyouryokushinagara sorezore no yakuwariwoishikishitesagyoushimasu'
+  },
+  {
+    text: 'できるようになった作業でも確認を続けて、丁寧に取り組むことを心がけます。',
+    romaji: 'dekiruyouninatta sagyoudemo kakuninwotsudukete teineini torikumukotowokokorogakemasu'
+  },
+  {
+    text: '作業の前後には手洗いをして、清潔な状態で作業できるようにします。',
+    romaji: 'sagyou no zengoni tearaiwoshite seiketsunajoutaide sagyouderukuyounishimasu'.replace(/\s/g, '')
+  },
+  {
+    text: '商品を扱うときは傷や汚れがないか確認し、丁寧に扱います。',
+    romaji: 'shouhinwoatsukautokiwa kizu ya yogoreganai kakakuninshi teinei ni atsukaimasu'.replace(/\s/g, '')
+  },
+  {
+    text: '作業の順番を確認して、一つの作業が終わってから次の作業へ進みます。',
+    romaji: 'sagyou no junbanwokakuninshite hitotsunosagyougaowattarakatsuginosagyoue susumimasu'.replace(/\s/g, '')
+  },
+  {
+    text: 'できなかったことだけではなく、できるようになったことも振り返ります。',
+    romaji: 'dekinakatta kotodakedenakudekiruyouninattakotomo furikaerimasu'.replace(/\s/g, '')
+  },
+  {
+    text: '自分のペースを守りながら、毎日少しずつ新しいことに挑戦します。',
+    romaji: 'jibunnope-suomamorinagara mainichisukoshizutsu atarashiikotonichousenshimasu'
+  },
+  {
+    text: '作業場では周りの人の動きにも気をつけて、安全に行動します。',
+    romaji: 'sagyouba dewa mawarinohitonougokinimo kiwotsukete anzennikoudoushimasu'
+  },
+  {
+    text: '一日の作業が終わったら今日できたことを確認して、明日の準備をします。',
+    romaji: 'ichinichinosagyougaowattara kyoudekita kotowokakun inshite ashitanojunbiwoshimasu'.replace(/\s/g, '')
+  },
+  {
+    text: '少しずつできることを増やして、自信を持って作業できるように取り組みます。',
+    romaji: 'sukoshizutsu dekirukotowofuyashite jishinwomotte sagyouderuyounitorikumimasu'
+  }
+];
 
 const additionalSentenceCount = 4;
 
-
-// ============================================================
-// 配列をシャッフル
-// ============================================================
-
 function shuffle(array) {
-
-  const result = [...array];
-
-  for (let i = result.length - 1; i > 0; i--) {
-
-    const j = Math.floor(Math.random() * (i + 1));
-
-    [result[i], result[j]] =
-      [result[j], result[i]];
-
-  }
-
-  return result;
+  return [...array].sort(() => Math.random() - 0.5);
 }
 
-
-// ============================================================
-// 長文を1問作成
-// ============================================================
-
 function createLongExample() {
+  const theme = themes[Math.floor(Math.random() * themes.length)];
 
-  // テーマをランダムに選択
-  const randomTheme =
-    themes[Math.floor(Math.random() * themes.length)];
+  const selectedSentences = shuffle(sentences)
+    .slice(0, additionalSentenceCount);
 
-
-  // 追加文章をランダムに選択
-  const randomSentences =
-    shuffle(sentences).slice(
-      0,
-      additionalSentenceCount
-    );
-
-
-  // 文章を組み合わせる
   const parts = [
-    randomTheme,
-    ...randomSentences,
+    theme,
+    ...selectedSentences,
     commonSentence
   ];
 
-
-  // 日本語をつなげる
-  const text = parts
-    .map(part => part.text)
-    .join('');
-
-
-  // ローマ字をつなげる
-  const romaji = parts
-    .map(part => part.romaji)
-    .join('');
-
-
   return {
-    text: text,
-    romaji: romaji,
-    parts: parts
+    text: parts.map(part => part.text).join(''),
+    romaji: parts.map(part => part.romaji).join(''),
+    parts
   };
-
 }
-
-
-// ============================================================
-// 20問を作成
-// ============================================================
 
 const generatedExamples = [];
 
 for (let i = 0; i < 20; i++) {
-
   const example = createLongExample();
 
   generatedExamples.push({
-
     name: `例題 ${String(i + 1).padStart(3, '0')}`,
-
     text: example.text,
-
     romaji: example.romaji,
-
     parts: example.parts
-
   });
-
 }
-
-
-// ============================================================
-// タイピングアプリへ渡す
-// ============================================================
 
 window.TYPING_EXAMPLES = generatedExamples;
