@@ -196,6 +196,29 @@ input:focus-visible {
   outline-offset:3px;
 }
 
+.menu-back-wrap{
+  margin-bottom:18px;
+}
+.menu-back{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:52px;
+  padding:9px 20px;
+  border-radius:12px;
+  color:#fff;
+  background:#476a7c;
+  font:700 18px "Yu Gothic UI","Meiryo",sans-serif;
+  text-decoration:none;
+}
+.menu-back:hover{
+  background:#385765;
+}
+.menu-back:focus-visible{
+  outline:4px solid #f2a900;
+  outline-offset:3px;
+}
+
 button.secondary {
   background:#476a7c;
 }
@@ -246,6 +269,11 @@ button:disabled {
 <body>
 
 <main>
+
+<div class="menu-back-wrap">
+<a class="menu-back" href="index.html" aria-label="メニューに戻る">← メニューに戻る</a>
+</div>
+
 
 <h1>ゆっくりタイピング練習</h1>
 
