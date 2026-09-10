@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>文書入力練習</title>
+<style>
+  :root{
+    --paper:#f7f5ef;
+    --ink:#2b2a26;
+    --line:#c9c3b3;
+    --accent:#2f5d50;
+    --accent-soft:#e4ece8;
+    --ok:#2f7a4f;
+    --ok-bg:#e6f3e9;
+    --ng:#b3452f;
+    --ng-bg:#fbe9e4;
+    --pending:#8a8577;
+  }
+  *{box-sizing:border-box;}
+  html,body{
+    margin:0;
+    padding:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Hiragino Kaku Gothic ProN","Yu Gothic",system-ui,-apple-system,"Meiryo",sans-serif;
+    -webkit-font-smoothing:antialiased;
+    user-select:none;
+    -webkit-user-select:none;
+    -ms-user-select:none;
+  }
+  .page{
+    max-width:760px;
+    margin:0 auto;
+    padding:28px 20px 60px;
+  }
+  header.app-head{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    border-bottom:3px solid var(--accent);
+    padding-bottom:14px;
+    margin-bottom:22px;
+  }
+  header.app-head h1{
+    font-size:22px;
+    margin:0;
+    letter-spacing:0.04em;
+  }
+  .progress{
+    font-size:15px;
+    color:var(--accent);
+    font-weight:600;
+    white-space:nowrap;
+  }
+  .progress-track{
+    height:6px;
+    background:var(--accent-soft);
+    border-radius:3px;
+    margin-bottom:22px;
+    overflow:hidden;
+  }
+  .progress-fill{
+    height:100%;
+    background:var(--accent);
+    transition:width .25s ease;
+  }
+
+  .stats{
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:10px;
+    margin-bottom:24px;
+  }
+  .stat{
+    border:2px solid var(--line);
+    border-radius:10px;
+    padding:10px 12px;
+    background:#fff;
+  }
+  .stat span{
+    display:block;
+    font-size:13px;
+    color:var(--pending);
+  }
+  .stat strong{
+    font-size:21px;
+  }
+
+  .category-tag{
+    display:inline-block;
+    font-size:13px;
+    color:var(--accent);
+    background:var(--accent-soft);
+    padding:3px 10px;
+    border-radius:3px;
+    margin-bottom:10px;
+  }
+  .doc-title{
+    font-size:19px;
+    font-weight:700;
+    margin:0 0 14px;
+  }
+  .sample-box{
+    background:#fff;
+    border:1px solid var(--line);
+    border-left:4px solid var(--accent);
+    padding:20px 22px;
+    line-height:2;
+    font-size:19px;
+    white-space:pre-wrap;
+    word-break:break-all;
+    margin-bottom:8px;
+    user-select:none;
+    -webkit-user-select:none;
+  }
+  .sample-box .ok{ color:var(--ok); background:var(--ok-bg); }
+  .sample-box .ng{ color:var(--ng); background:var(--ng-bg); text-decoration:underline; text-decoration-color:var(--ng); }
+  .sample-box .pending{ color:var(--ink); }
+  .counter-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    font-size:14px;
+    color:var(--pending);
+    margin-bottom:22px;
+  }
+  label.input-label{
+    display:block;
+    font-size:15px;
+    font-weight:600;
+    margin-bottom:8px;
+    user-select:none;
+  }
+  textarea{
+    width:100%;
+    min-height:170px;
+    font-size:19px;
+    line-height:1.9;
+    padding:16px;
+    border:1px solid var(--line);
+    background:#fff;
+    color:var(--ink);
+    font-family:inherit;
+    resize:vertical;
+    user-select:text;
+    -webkit-user-select:text;
+  }
+  textarea:focus{
+    outline:none;
+    border-color:var(--accent);
+    box-shadow:0 0 0 3px var(--accent-soft);
+  }
+  textarea[readonly]{
+    background:var(--ok-bg);
+    border-color:var(--ok);
+  }
+  .btn-row{
+    display:flex;
+    gap:10px;
+    margin-top:16px;
+    flex-wrap:wrap;
+  }
+  button{
+    font-family:inherit;
+    font-size:15px;
+    padding:11px 20px;
+    border-radius:3px;
+    border:1px solid var(--accent);
+    background:#fff;
+    color:var(--accent);
+    cursor:pointer;
+  }
+  button.primary{
+    background:var(--accent);
+    color:#fff;
+  }
+  button:disabled{
+    opacity:0.4;
+    cursor:default;
+  }
+  button:hover:not(:disabled){
+    filter:brightness(0.96);
+  }
+  .result-box{
+    margin-top:18px;
+    padding:14px 16px;
+    border-radius:3px;
+    font-size:15px;
+    display:none;
+    line-height:1.7;
+  }
+  .result-box.show{ display:block; }
+  .result-box.ok{ background:var(--ok-bg); border:1px solid var(--ok); color:var(--ok); }
+  .result-box.ng{ background:var(--ng-bg); border:1px solid var(--ng); color:var(--ng); }
+  .diff-detail{
+    margin-top:6px;
+    font-size:14px;
+    color:var(--ink);
+  }
+  .diff-detail b{
+    background:#fff;
+    padding:1px 6px;
+    border-radius:2px;
+  }
+
+  .paste-warning{
+    display:none;
+    margin-top:8px;
+    font-size:13px;
+    color:var(--ng);
+  }
+  .paste-warning.show{ display:block; }
+
+  .session-result{
+    margin-top:28px;
+    padding:22px;
+    background:#fff;
+    border:2px solid var(--accent);
+    border-radius:10px;
+    display:none;
+  }
+  .session-result.show{ display:block; }
+  .session-result h2{
+    margin:0 0 10px;
+    font-size:20px;
+    color:var(--accent);
+  }
+  .session-result-text{
+    white-space:pre-line;
+    font-size:15px;
+    line-height:1.9;
+    margin-bottom:14px;
+  }
+
+  footer.note{
+    margin-top:36px;
+    font-size:13px;
+    color:var(--pending);
+    text-align:center;
+    user-select:none;
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header class="app-head">
+    <h1>文書入力練習</h1>
+    <div class="progress" id="progress-label">問題 1 / 15</div>
+  </header>
+
+  <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:6.6%;"></div></div>
+
+  <section class="stats" aria-label="練習状況">
+    <div class="stat">
+      <span>経過時間</span>
+      <strong id="elapsed">0分 0秒</strong>
+    </div>
+    <div class="stat">
+      <span>完了した文書</span>
+      <strong id="completed-count">0 / 15</strong>
+    </div>
+  </section>
+
+  <div class="category-tag" id="category-tag">作業報告</div>
+  <div class="doc-title" id="doc-title">作業報告書</div>
+
+  <div class="sample-box" id="sample-box"></div>
+
+  <div class="counter-row">
+    <span id="char-count">入力文字数 0 / 0</span>
+    <span id="status-label"></span>
+  </div>
+
+  <label class="input-label" for="input-area">見本と同じ文章を、ここに入力してください</label>
+  <textarea id="input-area" placeholder="ここに入力します" autocomplete="off" autocapitalize="off" spellcheck="false"></textarea>
+  <div class="paste-warning" id="paste-warning">貼り付けはできません。ご自身で入力してください。</div>
+
+  <div class="btn-row">
+    <button class="primary" id="check-btn">答え合わせ</button>
+    <button id="reset-btn">この問題をやり直す</button>
+    <button id="prev-btn">前の問題</button>
+    <button id="next-btn">次の問題</button>
+  </div>
+
+  <div class="btn-row">
+    <button id="finish-btn">結果を確認して終了する</button>
+    <button id="restart-btn">最初からやり直す</button>
+  </div>
+
+  <div class="result-box" id="result-box"></div>
+
+  <section class="session-result" id="session-result" aria-live="polite">
+    <h2 id="session-result-title">練習の記録</h2>
+    <div class="session-result-text" id="session-result-text"></div>
+    <button id="copy-result-btn">結果をコピー</button>
+  </section>
+
+  <footer class="note">見本とまったく同じ文字を入力することが目標です。漢字・ひらがな・カタカナ・数字・記号も見本のとおりに入力してください。</footer>
+
+</div>
+
+<script>
+const problems = [
+  {
+    category: "作業報告",
+    title: "作業報告書",
+    body: "本日は午前10時から商品の袋詰め作業を行いました。作業を始める前に商品の数量を確認し、決められた手順に沿って作業を進めました。作業中は商品の向きや数量に注意し、一つずつ確認しながら丁寧に取り組みました。"
+  },
+  {
+    category: "職員からのお知らせ",
+    title: "連絡事項",
+    body: "お疲れさまです。明日の作業についてお知らせします。明日は午前中に商品の袋詰め作業を行い、午後からは清掃作業を予定しています。作業内容に変更がある場合は、職員から改めてお知らせします。"
+  },
+  {
+    category: "明日の予定",
+    title: "作業についてのお知らせ",
+    body: "明日の作業では、商品の袋詰めを中心に行います。作業を始める前に、必要な道具や商品の数量を確認してください。作業中に分からないことや困ったことがあった場合は、自分で判断して進めず、職員に確認してください。"
+  },
+  {
+    category: "商品に関する文章",
+    title: "商品の取り扱いについて",
+    body: "この商品は割れやすいため、運ぶときは両手で丁寧に持ってください。箱を重ねる場合は、上に重いものを置かないようにしてください。作業台の上に置くときは、端に近い場所を避けてください。"
+  },
+  {
+    category: "清掃作業の手順",
+    title: "清掃作業の手順書",
+    body: "はじめに床のごみを取り除いてから、掃除機をかけてください。次に机や棚のほこりを乾いた布で拭き取ります。最後にごみ袋をまとめて所定の場所に運び、清掃用具を元の位置に戻してください。"
+  },
+  {
+    category: "パソコン作業の手順",
+    title: "パソコン作業の手順",
+    body: "パソコンの電源を入れたら、まず担当者用のアカウントでログインしてください。次に本日入力する資料のフォルダを開き、指示された順番でデータを入力します。入力が終わったら、必ず保存を行ってから作業を終了してください。"
+  },
+  {
+    category: "作業報告",
+    title: "作業報告書",
+    body: "本日は午後1時から資料の仕分け作業を行いました。書類の種類ごとに分類し、指定されたファイルに収めました。数が多かったため、時間をかけて丁寧に確認しながら進めました。"
+  },
+  {
+    category: "職員からのお知らせ",
+    title: "休憩時間の変更について",
+    body: "明日は行事の準備があるため、休憩時間が通常より30分早くなります。休憩の開始時刻は職員から声をかけますので、それまでは通常どおり作業を続けてください。"
+  },
+  {
+    category: "明日の予定",
+    title: "明日の作業予定",
+    body: "明日は午前中に新しい商品の検品作業があります。午後は倉庫の整理を行う予定です。持ち物や服装に変更はありませんので、いつもどおりの準備で来てください。"
+  },
+  {
+    category: "商品に関する文章",
+    title: "商品の保管について",
+    body: "商品は直射日光の当たらない涼しい場所に保管してください。段ボール箱は湿気を吸いやすいため、床に直接置かず、必ず台の上に置くようにしてください。"
+  },
+  {
+    category: "清掃作業の手順",
+    title: "トイレ清掃の手順",
+    body: "最初に手洗い場の水滴を拭き取ります。次に床のモップがけを行い、最後にごみ箱のごみを回収してください。作業が終わったら手袋を外し、石けんで手をよく洗ってください。"
+  },
+  {
+    category: "パソコン作業の手順",
+    title: "データ入力の手順",
+    body: "配られた用紙を見ながら、名前と日付を一件ずつ入力してください。入力を間違えた場合は、消してから正しい内容を入力し直してください。すべて入力し終わったら、内容を見直してから保存してください。"
+  },
+  {
+    category: "職員からのお知らせ",
+    title: "来客対応について",
+    body: "本日は午後から見学の来客がある予定です。作業場所を通る際は、道具を通路に置かないようにご協力ください。分からないことがあれば、その場で職員に声をかけてください。"
+  },
+  {
+    category: "作業報告",
+    title: "作業報告書",
+    body: "本日は新商品のシール貼りを行いました。シールがずれないよう、一枚ずつ位置を確認してから貼りました。作業の途中で不明な点があったため、職員に確認してから進めました。"
+  },
+  {
+    category: "商品に関する文章",
+    title: "商品の説明",
+    body: "この商品は毎日の作業で使う軍手です。サイズはSとMの二種類があります。使用後は汚れを払ってから、決められた棚に戻してください。"
+  }
+];
+
+let current = 0;
+
+/* =========================================================
+   練習全体の記録（開始・終了時刻／不一致回数／完了数）
+========================================================= */
+let startedAt = null;
+let endedAt = null;
+let sessionTimer = null;
+const completedSet = new Set();
+let sessionFinished = false;
+
+const two = n => String(n).padStart(2, "0");
+
+function timeCode(date) {
+  if (!date) return "";
+  return two(date.getHours()) + two(date.getMinutes()) + two(date.getSeconds());
+}
+
+function durationText(ms) {
+  const s = Math.max(0, Math.floor(ms / 1000));
+  return `${Math.floor(s / 60)}分 ${s % 60}秒`;
+}
+
+const els = {
+  progressLabel: document.getElementById("progress-label"),
+  progressFill: document.getElementById("progress-fill"),
+  elapsed: document.getElementById("elapsed"),
+  completedCount: document.getElementById("completed-count"),
+  categoryTag: document.getElementById("category-tag"),
+  docTitle: document.getElementById("doc-title"),
+  sampleBox: document.getElementById("sample-box"),
+  charCount: document.getElementById("char-count"),
+  statusLabel: document.getElementById("status-label"),
+  input: document.getElementById("input-area"),
+  pasteWarning: document.getElementById("paste-warning"),
+  checkBtn: document.getElementById("check-btn"),
+  resetBtn: document.getElementById("reset-btn"),
+  prevBtn: document.getElementById("prev-btn"),
+  nextBtn: document.getElementById("next-btn"),
+  finishBtn: document.getElementById("finish-btn"),
+  restartBtn: document.getElementById("restart-btn"),
+  resultBox: document.getElementById("result-box"),
+  sessionResult: document.getElementById("session-result"),
+  sessionResultTitle: document.getElementById("session-result-title"),
+  sessionResultText: document.getElementById("session-result-text"),
+  copyResultBtn: document.getElementById("copy-result-btn"),
+};
+
+function escapeHtml(s){
+  return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+}
+
+function renderSample(){
+  const p = problems[current];
+  const inputVal = els.input.value;
+  let html = "";
+  for(let i=0;i<p.body.length;i++){
+    const ch = escapeHtml(p.body[i]);
+    if(i < inputVal.length){
+      if(inputVal[i] === p.body[i]){
+        html += `<span class="ok">${ch}</span>`;
+      }else{
+        html += `<span class="ng">${ch}</span>`;
+      }
+    }else{
+      html += `<span class="pending">${ch}</span>`;
+    }
+  }
+  els.sampleBox.innerHTML = html;
+}
+
+function findFirstDiff(inputVal, body){
+  const len = Math.min(inputVal.length, body.length);
+  for(let i=0;i<len;i++){
+    if(inputVal[i] !== body[i]) return i;
+  }
+  if(inputVal.length !== body.length) return len;
+  return -1;
+}
+
+function updateCounter(){
+  const p = problems[current];
+  els.charCount.textContent = `入力文字数 ${els.input.value.length} / ${p.body.length}`;
+}
+
+/* =========================================================
+   練習全体の統計表示
+========================================================= */
+function updateSessionStats(){
+  els.elapsed.textContent = durationText(startedAt ? Date.now() - startedAt : 0);
+  els.completedCount.textContent = `${completedSet.size} / ${problems.length}`;
+}
+
+function ensureSessionStarted(){
+  if(startedAt || sessionFinished) return;
+  startedAt = new Date();
+  sessionTimer = setInterval(updateSessionStats, 250);
+  updateSessionStats();
+}
+
+function loadProblem(index){
+  current = index;
+  const p = problems[current];
+  els.categoryTag.textContent = p.category;
+  els.docTitle.textContent = p.title;
+  els.progressLabel.textContent = `問題 ${current + 1} / ${problems.length}`;
+  els.progressFill.style.width = `${((current + 1) / problems.length) * 100}%`;
+  els.input.value = "";
+  els.input.readOnly = false;
+  els.input.focus();
+  els.resultBox.className = "result-box";
+  els.resultBox.innerHTML = "";
+  els.statusLabel.textContent = "";
+  els.pasteWarning.classList.remove("show");
+  els.prevBtn.disabled = current === 0;
+  els.nextBtn.disabled = current === problems.length - 1;
+  renderSample();
+  updateCounter();
+}
+
+function checkAnswer(){
+  const p = problems[current];
+  const inputVal = els.input.value;
+  renderSample();
+  updateCounter();
+
+  if(inputVal === p.body){
+    els.resultBox.className = "result-box ok show";
+    els.resultBox.innerHTML = "🟢 完全一致です。よくできました。";
+    els.statusLabel.textContent = "正解";
+    els.input.readOnly = true;
+
+    if(!completedSet.has(current)){
+      completedSet.add(current);
+      updateSessionStats();
+      if(completedSet.size === problems.length){
+        finishSession("全問完了");
+      }
+    }
+  }else{
+    const diffIndex = findFirstDiff(inputVal, p.body);
+    els.resultBox.className = "result-box ng show";
+    if(diffIndex === -1){
+      els.resultBox.innerHTML = "🔴 見本と一致しません。もう一度確認してください。";
+    }else{
+      const sampleChar = p.body[diffIndex] !== undefined ? p.body[diffIndex] : "（文字なし）";
+      const inputChar = inputVal[diffIndex] !== undefined ? inputVal[diffIndex] : "（未入力）";
+      els.resultBox.innerHTML =
+        `🔴 ${diffIndex + 1}文字目が見本と違います。<div class="diff-detail">見本：<b>${escapeHtml(sampleChar)}</b> ／ 入力：<b>${escapeHtml(inputChar)}</b></div>`;
+    }
+    els.statusLabel.textContent = "不一致";
+  }
+}
+
+/* =========================================================
+   練習終了・記録の表示
+========================================================= */
+function finishSession(status){
+  if(sessionFinished) return;
+  sessionFinished = true;
+  endedAt = new Date();
+  if(sessionTimer) clearInterval(sessionTimer);
+  updateSessionStats();
+
+  const text =
+`文書入力練習の記録
+状態：${status}
+かかった時間：${durationText(endedAt - (startedAt || endedAt))}
+完了した文書：${completedSet.size} / ${problems.length}`;
+
+  const hiddenCode = timeCode(startedAt) + timeCode(endedAt);
+
+  els.sessionResultTitle.textContent =
+    status === "全問完了" ? "練習が終わりました" : "練習を終了しました";
+  els.sessionResultText.textContent = text;
+  els.copyResultBtn.dataset.text = text + "\n" + hiddenCode;
+  els.sessionResult.classList.add("show");
+  els.finishBtn.disabled = true;
+}
+
+function restartSession(){
+  startedAt = null;
+  endedAt = null;
+  if(sessionTimer) clearInterval(sessionTimer);
+  sessionTimer = null;
+  completedSet.clear();
+  sessionFinished = false;
+  els.finishBtn.disabled = false;
+  els.sessionResult.classList.remove("show");
+  updateSessionStats();
+  loadProblem(0);
+}
+
+/* =========================================================
+   コピー・貼り付けの制限
+========================================================= */
+document.addEventListener("copy", e => e.preventDefault());
+document.addEventListener("cut", e => e.preventDefault());
+document.addEventListener("contextmenu", e => e.preventDefault());
+els.sampleBox.addEventListener("dragstart", e => e.preventDefault());
+
+els.input.addEventListener("paste", e => {
+  e.preventDefault();
+  els.pasteWarning.classList.add("show");
+});
+
+/* =========================================================
+   イベント
+========================================================= */
+els.input.addEventListener("input", () => {
+  ensureSessionStarted();
+  renderSample();
+  updateCounter();
+  els.resultBox.className = "result-box";
+  els.resultBox.innerHTML = "";
+  els.statusLabel.textContent = "";
+  els.pasteWarning.classList.remove("show");
+});
+
+els.checkBtn.addEventListener("click", checkAnswer);
+els.resetBtn.addEventListener("click", () => loadProblem(current));
+els.prevBtn.addEventListener("click", () => { if(current > 0) loadProblem(current - 1); });
+els.nextBtn.addEventListener("click", () => { if(current < problems.length - 1) loadProblem(current + 1); });
+els.finishBtn.addEventListener("click", () => finishSession("途中終了"));
+els.restartBtn.addEventListener("click", restartSession);
+
+els.copyResultBtn.addEventListener("click", async () => {
+  try{
+    await navigator.clipboard.writeText(els.copyResultBtn.dataset.text);
+    els.copyResultBtn.textContent = "コピーしました";
+  }catch(err){
+    const area = document.createElement("textarea");
+    area.value = els.copyResultBtn.dataset.text;
+    document.body.append(area);
+    area.select();
+    document.execCommand("copy");
+    area.remove();
+    els.copyResultBtn.textContent = "コピーしました";
+  }
+  setTimeout(() => { els.copyResultBtn.textContent = "結果をコピー"; }, 1800);
+});
+
+updateSessionStats();
+loadProblem(0);
+</script>
+
+</body>
+</html>
