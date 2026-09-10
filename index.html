@@ -1,9 +1,193 @@
 <!doctype html>
 <html lang="ja">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>練習メニュー</title><style>:root{--ink:#173042;--blue:#1769aa;--pale:#eef7fb;--line:#cbdde7;--white:#fff}*{box-sizing:border-box}body{margin:0;min-height:100vh;font-family:"Yu Gothic","Hiragino Kaku Gothic ProN",Meiryo,sans-serif;color:var(--ink);background:linear-gradient(180deg,#f5fbfe 0%,#eef7fb 100%)}main{width:min(100% - 32px,1000px);margin:0 auto;padding:48px 0 60px}.header{text-align:center;margin-bottom:36px}.header h1{margin:0 0 12px;font-size:clamp(30px,5vw,48px);line-height:1.3}.header p{margin:0;font-size:clamp(17px,2.5vw,22px);line-height:1.7}.menu{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px}.menu-link{display:flex;flex-direction:column;justify-content:center;min-height:210px;padding:28px;color:var(--ink);text-decoration:none;background:var(--white);border:3px solid var(--line);border-radius:22px;box-shadow:0 6px 18px rgba(23,48,66,.08);transition:transform .15s ease,box-shadow .15s ease,border-color .15s ease}.menu-link:hover,.menu-link:focus-visible{transform:translateY(-3px);border-color:var(--blue);box-shadow:0 10px 24px rgba(23,48,66,.13);outline:none}.number{font-size:20px;font-weight:700;color:var(--blue);margin-bottom:10px}.title{font-size:clamp(25px,4vw,34px);font-weight:700;line-height:1.4;margin-bottom:12px}.description{font-size:18px;line-height:1.7}.arrow{margin-top:18px;font-size:20px;font-weight:700;color:var(--blue)}.footer{text-align:center;margin-top:38px;font-size:15px;color:#58707d}@media(max-width:600px){main{width:min(100% - 20px,1000px);padding:30px 0 40px}.menu{grid-template-columns:1fr;gap:16px}.menu-link{min-height:190px;padding:24px}}</style></head>
-<body><main><header class="header"><h1>練習メニュー</h1><p>やってみたい練習を選んでください。</p></header>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>練習メニュー</title>
+<style>
+:root{
+  --ink:#17293a;
+  --sub:#4d6472;
+  --blue:#1769aa;
+  --blue-dark:#0f5488;
+  --pale:#eef6fb;
+  --line:#d3e3ec;
+  --white:#fff;
+}
+
+*{ box-sizing:border-box; }
+
+body{
+  margin:0;
+  min-height:100vh;
+  font-family:"Yu Gothic","Hiragino Kaku Gothic ProN",Meiryo,sans-serif;
+  color:var(--ink);
+  background:var(--pale);
+}
+
+main{
+  width:min(100% - 40px, 880px);
+  margin:0 auto;
+  padding:56px 0 64px;
+}
+
+.header{
+  text-align:center;
+  margin-bottom:44px;
+}
+
+.header h1{
+  margin:0 0 14px;
+  font-size:clamp(30px, 5vw, 42px);
+  line-height:1.35;
+  letter-spacing:.02em;
+}
+
+.header p{
+  margin:0;
+  font-size:clamp(17px, 2.4vw, 20px);
+  line-height:1.8;
+  color:var(--sub);
+}
+
+.menu{
+  display:flex;
+  flex-direction:column;
+  gap:20px;
+}
+
+.menu-link{
+  display:flex;
+  align-items:center;
+  gap:26px;
+  padding:30px 32px;
+  color:var(--ink);
+  text-decoration:none;
+  background:var(--white);
+  border:2px solid var(--line);
+  border-radius:18px;
+  box-shadow:0 3px 10px rgba(23,41,58,.06);
+  transition:transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+}
+
+.menu-link:hover,
+.menu-link:focus-visible{
+  transform:translateY(-2px);
+  border-color:var(--blue);
+  box-shadow:0 10px 22px rgba(23,41,58,.12);
+  outline:none;
+}
+
+.badge{
+  flex:none;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:64px;
+  height:64px;
+  border-radius:50%;
+  background:var(--blue);
+  color:#fff;
+  font-size:26px;
+  font-weight:700;
+}
+
+.menu-text{
+  flex:1;
+  min-width:0;
+}
+
+.title{
+  font-size:clamp(22px, 3.4vw, 27px);
+  font-weight:700;
+  line-height:1.4;
+  margin-bottom:8px;
+}
+
+.description{
+  font-size:16px;
+  line-height:1.75;
+  color:var(--sub);
+}
+
+.cta{
+  flex:none;
+  padding:12px 22px;
+  border-radius:999px;
+  background:var(--blue);
+  color:#fff;
+  font-size:16px;
+  font-weight:700;
+  white-space:nowrap;
+}
+
+.menu-link:hover .cta,
+.menu-link:focus-visible .cta{
+  background:var(--blue-dark);
+}
+
+.footer{
+  text-align:center;
+  margin-top:44px;
+  font-size:15px;
+  color:var(--sub);
+}
+
+@media (max-width:640px){
+  main{
+    padding:36px 0 48px;
+  }
+
+  .menu-link{
+    flex-direction:column;
+    align-items:flex-start;
+    text-align:left;
+    gap:14px;
+    padding:26px 24px;
+  }
+
+  .cta{
+    align-self:stretch;
+    text-align:center;
+  }
+}
+</style>
+</head>
+
+<body>
+<main>
+
+<header class="header">
+<h1>練習メニュー</h1>
+<p>やってみたい練習を選んでください。</p>
+</header>
+
 <section class="menu" aria-label="練習メニュー">
-<a class="menu-link" href="index_latest_no_example_selector.html"><span class="number">①</span><span class="title">ゆっくりタイピング練習</span><span class="description">文章を見ながら、ゆっくり文字を入力する練習です。</span><span class="arrow">練習を始める →</span></a>
-<a class="menu-link" href="bunsho.html"><span class="number">②</span><span class="title">文書入力練習</span><span class="description">見本を見ながら、同じ文章を入力する練習です。</span><span class="arrow">練習を始める →</span></a>
-<!-- 新しい練習ページはここにカードを追加するだけで拡張できます。 --></section>
-<footer class="footer">自分のペースでゆっくり練習しましょう。</footer></main></body></html>
+
+<a class="menu-link" href="index_latest_no_example_selector.html">
+  <span class="badge" aria-hidden="true">①</span>
+  <span class="menu-text">
+    <span class="title">ゆっくりタイピング練習</span>
+    <span class="description">文章を見ながら、ゆっくり文字を入力する練習です。</span>
+  </span>
+  <span class="cta">練習を始める</span>
+</a>
+
+<a class="menu-link" href="bunsho.html">
+  <span class="badge" aria-hidden="true">②</span>
+  <span class="menu-text">
+    <span class="title">文書入力練習</span>
+    <span class="description">見本を見ながら、同じ文章を入力する練習です。</span>
+  </span>
+  <span class="cta">練習を始める</span>
+</a>
+
+<!-- 新しい練習ページはここにカードを追加するだけで拡張できます。 -->
+
+</section>
+
+<p class="footer">自分のペースでゆっくり練習しましょう。</p>
+
+</main>
+</body>
+</html>
