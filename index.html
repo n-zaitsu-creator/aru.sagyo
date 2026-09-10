@@ -38,14 +38,14 @@ main{
 
 .header h1{
   margin:0 0 14px;
-  font-size:clamp(30px, 5vw, 42px);
+  font-size:40px;
   line-height:1.35;
   letter-spacing:.02em;
 }
 
 .header p{
   margin:0;
-  font-size:clamp(17px, 2.4vw, 20px);
+  font-size:18px;
   line-height:1.8;
   color:var(--sub);
 }
@@ -57,9 +57,10 @@ main{
 }
 
 .menu-link{
-  display:flex;
-  align-items:center;
-  gap:26px;
+  display:grid;
+  grid-template-columns:64px 1fr;
+  column-gap:22px;
+  row-gap:10px;
   padding:30px 32px;
   color:var(--ink);
   text-decoration:none;
@@ -79,46 +80,51 @@ main{
 }
 
 .badge{
-  flex:none;
+  grid-column:1;
+  grid-row:1;
+  width:64px;
+  height:64px;
   display:flex;
   align-items:center;
   justify-content:center;
-  width:64px;
-  height:64px;
   border-radius:50%;
   background:var(--blue);
   color:#fff;
-  font-size:26px;
+  font-size:24px;
   font-weight:700;
-}
-
-.menu-text{
-  flex:1;
-  min-width:0;
+  line-height:1;
 }
 
 .title{
-  font-size:clamp(22px, 3.4vw, 27px);
+  grid-column:2;
+  grid-row:1;
+  display:flex;
+  align-items:center;
+  min-height:64px;
+  font-size:24px;
   font-weight:700;
   line-height:1.4;
-  margin-bottom:8px;
 }
 
 .description{
+  grid-column:2;
+  grid-row:2;
   font-size:16px;
   line-height:1.75;
   color:var(--sub);
 }
 
 .cta{
-  flex:none;
-  padding:12px 22px;
+  grid-column:1 / -1;
+  grid-row:3;
+  margin-top:8px;
+  padding:14px 0;
   border-radius:999px;
   background:var(--blue);
   color:#fff;
   font-size:16px;
   font-weight:700;
-  white-space:nowrap;
+  text-align:center;
 }
 
 .menu-link:hover .cta,
@@ -138,17 +144,27 @@ main{
     padding:36px 0 48px;
   }
 
-  .menu-link{
-    flex-direction:column;
-    align-items:flex-start;
-    text-align:left;
-    gap:14px;
-    padding:26px 24px;
+  .header h1{
+    font-size:30px;
   }
 
-  .cta{
-    align-self:stretch;
-    text-align:center;
+  .header p{
+    font-size:16px;
+  }
+
+  .menu-link{
+    padding:24px 22px;
+  }
+
+  .title{
+    font-size:20px;
+    min-height:56px;
+  }
+
+  .badge{
+    width:56px;
+    height:56px;
+    font-size:21px;
   }
 }
 </style>
@@ -166,19 +182,15 @@ main{
 
 <a class="menu-link" href="index_latest_no_example_selector.html">
   <span class="badge" aria-hidden="true">①</span>
-  <span class="menu-text">
-    <span class="title">ゆっくりタイピング練習</span>
-    <span class="description">文章を見ながら、ゆっくり文字を入力する練習です。</span>
-  </span>
+  <span class="title">ゆっくりタイピング練習</span>
+  <span class="description">文章を見ながら、ゆっくり文字を入力する練習です。</span>
   <span class="cta">練習を始める</span>
 </a>
 
 <a class="menu-link" href="bunsho.html">
   <span class="badge" aria-hidden="true">②</span>
-  <span class="menu-text">
-    <span class="title">文書入力練習</span>
-    <span class="description">見本を見ながら、同じ文章を入力する練習です。</span>
-  </span>
+  <span class="title">文書入力練習</span>
+  <span class="description">見本を見ながら、同じ文章を入力する練習です。</span>
   <span class="cta">練習を始める</span>
 </a>
 
