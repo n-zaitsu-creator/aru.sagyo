@@ -240,10 +240,31 @@
     text-align:center;
     user-select:none;
   }
+
+  .menu-back-wrap{
+    margin-bottom:16px;
+  }
+  .menu-back{
+    display:inline-block;
+    padding:8px 14px;
+    border:1px solid var(--accent);
+    border-radius:3px;
+    background:#fff;
+    color:var(--accent);
+    text-decoration:none;
+    font-size:14px;
+  }
+  .menu-back:hover{
+    filter:brightness(0.96);
+  }
 </style>
 </head>
 <body>
 <div class="page">
+
+  <div class="menu-back-wrap">
+    <a class="menu-back" href="index.html" aria-label="メニューに戻る">← メニューに戻る</a>
+  </div>
 
   <header class="app-head">
     <h1>文書入力練習</h1>
